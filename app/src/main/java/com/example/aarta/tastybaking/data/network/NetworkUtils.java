@@ -1,6 +1,7 @@
-package com.example.aarta.tastybaking.network;
+package com.example.aarta.tastybaking.data.network;
 
-import com.example.aarta.tastybaking.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Recipe;
+import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,11 +19,11 @@ public class NetworkUtils {
     // Fetch and parse recipes into Recipe model
     public static List<Recipe> getResponseWithUrl(String urlString, String fileName) {
         Call<List<Recipe>> retroCall = getApiService(urlString).getRecipes(fileName);
-        List<Recipe> recipeList = new ArrayList<Recipe>();
+        List<Recipe> recipeList = new ArrayList<>();
         try {
             recipeList = retroCall.execute().body();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.e("Exception" + e);
         }
         return recipeList;
     }

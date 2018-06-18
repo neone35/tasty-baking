@@ -1,5 +1,6 @@
 package com.example.aarta.tastybaking.ui;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.aarta.tastybaking.R;
-import com.example.aarta.tastybaking.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Recipe;
+import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
+
+import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -27,6 +31,7 @@ public class RecipeCardListFragment extends Fragment {
     private static final String COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private onRecipeCardsListFragmentInteractionListener mListener;
+    private MainViewModel mViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,8 +63,6 @@ public class RecipeCardListFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_recipe_card_list, container, false);
 
-        // TODO: Get data from database here
-
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -68,8 +71,17 @@ public class RecipeCardListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-//            recyclerView.setAdapter(new RecipeCardItemAdapter(recipeList, mListener));
         }
+
+        // Get data from database
+        MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
+        mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+        mViewModel.getRecipes().observe(this, recipes -> {
+            if (view instanceof RecyclerView) {
+                RecyclerView recyclerView = (RecyclerView) view;
+                recyclerView.setAdapter(new RecipeCardItemAdapter(recipes, mListener));
+            }
+        });
 
         return view;
     }

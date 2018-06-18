@@ -1,6 +1,6 @@
-package com.example.aarta.tastybaking.network;
+package com.example.aarta.tastybaking.data.network;
 
-import com.example.aarta.tastybaking.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Recipe;
 
 import java.util.List;
 

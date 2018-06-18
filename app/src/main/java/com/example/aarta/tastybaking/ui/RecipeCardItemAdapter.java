@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.ui.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
-import com.example.aarta.tastybaking.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Recipe;
 
 import java.util.List;
 
@@ -41,14 +41,11 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         holder.mIdView.setText(String.valueOf(mRecipeList.get(position).getId()));
         holder.mContentView.setText(mRecipeList.get(position).getName());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mRecipe);
-                }
+        holder.mView.setOnClickListener(v -> {
+            if (null != mListener) {
+                // Notify the active callbacks interface (the activity, if the
+                // fragment is attached to one) that an item has been selected.
+                mListener.onListFragmentInteraction(holder.mRecipe);
             }
         });
     }

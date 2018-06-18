@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking.network;
+package com.example.aarta.tastybaking.data.network;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
 import com.example.aarta.tastybaking.AppExecutors;
-import com.example.aarta.tastybaking.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Recipe;
 import com.orhanobut.logger.Logger;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class RecipesNetworkRoot {
 
     private RecipesNetworkRoot(Context context, AppExecutors executors) {
         mExecutors = executors;
-        mDownloadedRecipes = new MutableLiveData<List<Recipe>>();
+        mDownloadedRecipes = new MutableLiveData<>();
     }
 
     // Get singleton for this class
@@ -45,7 +45,7 @@ public class RecipesNetworkRoot {
         return mDownloadedRecipes;
     }
 
-    void fetchRecipes() {
+    public void fetchRecipes() {
         Logger.d("Recipe fetch started");
         mExecutors.networkIO().execute(() -> {
             try {
@@ -54,7 +54,7 @@ public class RecipesNetworkRoot {
                 // trigger observers of that LiveData
                 if (recipes != null && recipes.size() != 0) {
                     Logger.d("JSON not null and has " + recipes.size() + " values");
-                    Logger.d("First value is " + recipes.get(0));
+                    Logger.d("First value is " + recipes.get(0).getName());
 
                     // update LiveData off main thread -> to main thread (postValue)
                     mDownloadedRecipes.postValue(recipes);
