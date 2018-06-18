@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking;
+package com.example.aarta.tastybaking.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,17 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.models.Recipe;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A fragment representing a list of Items.
@@ -65,38 +58,19 @@ public class RecipeCardListFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_recipe_card_list, container, false);
 
-        // Fetch and parse recipes into Recipe model
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MainActivity.RECIPES_JSON_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RecipesEndpointInterface apiService =
-                retrofit.create(RecipesEndpointInterface.class);
-        Call<List<Recipe>> call = apiService.getRecipes("baking.json");
-        call.enqueue(new Callback<List<Recipe>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
-                int statusCode = response.code();
-                List<Recipe> recipeList = response.body();
+        // TODO: Get data from database here
 
-                // Set the adapter
-                if (view instanceof RecyclerView) {
-                    Context context = view.getContext();
-                    RecyclerView recyclerView = (RecyclerView) view;
-                    if (mColumnCount <= 1) {
-                        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    } else {
-                        recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-                    }
-                    recyclerView.setAdapter(new RecipeCardsAdapter(recipeList, mListener));
-                }
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+//            recyclerView.setAdapter(new RecipeCardItemAdapter(recipeList, mListener));
+        }
 
-            @Override
-            public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
-                Logger.d(t);
-            }
-        });
         return view;
     }
 
@@ -129,7 +103,6 @@ public class RecipeCardListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface onRecipeCardsListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Recipe recipe);
     }
 }

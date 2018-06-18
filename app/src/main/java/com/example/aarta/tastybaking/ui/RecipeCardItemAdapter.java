@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking;
+package com.example.aarta.tastybaking.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.aarta.tastybaking.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
+import com.example.aarta.tastybaking.R;
+import com.example.aarta.tastybaking.ui.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.models.Recipe;
 
 import java.util.List;
@@ -15,14 +16,13 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Recipe} and makes a call to the
  * specified {@link onRecipeCardsListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
-public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.ViewHolder> {
+public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAdapter.ViewHolder> {
 
     private final List<Recipe> mRecipeList;
     private final onRecipeCardsListFragmentInteractionListener mListener;
 
-    RecipeCardsAdapter(List<Recipe> recipes, onRecipeCardsListFragmentInteractionListener listener) {
+    RecipeCardItemAdapter(List<Recipe> recipes, onRecipeCardsListFragmentInteractionListener listener) {
         mRecipeList = recipes;
         mListener = listener;
     }
@@ -31,7 +31,7 @@ public class RecipeCardsAdapter extends RecyclerView.Adapter<RecipeCardsAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_recipe_card, parent, false);
+                .inflate(R.layout.fragment_recipe_card_item, parent, false);
         return new ViewHolder(view);
     }
 

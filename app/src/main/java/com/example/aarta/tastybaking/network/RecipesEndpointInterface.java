@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking;
+package com.example.aarta.tastybaking.network;
 
 import com.example.aarta.tastybaking.models.Recipe;
 

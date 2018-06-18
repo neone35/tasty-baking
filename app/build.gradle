@@ -20,27 +20,37 @@ android {
 }
 
 ext {
-    supportLibVersion = '27.1.1'
-    constraintLayoutVersion = '1.1.2'
+    support_lib_v = '27.1.1'
+    constraint_layout_v = '1.1.2'
+    aac_v = '1.1.1'
+    retrofit_v = '2.3.0'
+    room_v = '1.1.1'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-    implementation "com.android.support:support-v4:${supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
-    implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation "com.android.support:appcompat-v7:$support_lib_v"
+    implementation "com.android.support:support-compat:$support_lib_v"
+    implementation "com.android.support:recyclerview-v7:$support_lib_v"
+    implementation "com.android.support.constraint:constraint-layout:$constraint_layout_v"
+
+    // Android Architecture components
+    implementation "android.arch.lifecycle:extensions:$aac_v" // ViewModel & LiveData
+    implementation "android.arch.lifecycle:runtime:$aac_v" // Compat with support library
+    annotationProcessor "android.arch.lifecycle:compiler:$aac_v"
 
     // 3rd party libraries
-    implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.google.code.gson:gson:2.8.2' // parsing
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_v" // network calls
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_v"
+    implementation 'com.orhanobut:logger:2.2.0' // logging
+    implementation "android.arch.persistence.room:runtime:$room_v-rc1" // database
+    annotationProcessor "android.arch.persistence.room:compiler:$room_v"
 
     // Test dependencies
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation "android.arch.core:core-testing:$aac_v"
+    testImplementation "android.arch.persistence.room:testing:$room_v-rc1"
 }
