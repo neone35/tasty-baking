@@ -31,7 +31,7 @@ public class RecipeCardListFragment extends Fragment {
     private static final String COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private onRecipeCardsListFragmentInteractionListener mListener;
-    private MainViewModel mViewModel;
+    private MainFragViewModel mViewModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -73,9 +73,11 @@ public class RecipeCardListFragment extends Fragment {
             }
         }
 
-        // Get data from database
-        MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
-        mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+        // Get repository instance (erase existing data & observe MutableLiveData trigger)
+        MainFragViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
+        // Tie fragment & ViewModel together
+        mViewModel = ViewModelProviders.of(this, factory).get(MainFragViewModel.class);
+        // Trigger service once & observe change in database
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
                 RecyclerView recyclerView = (RecyclerView) view;

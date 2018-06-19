@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements RecipeCardListFra
         fragmentManager.beginTransaction()
                 .add(R.id.fl_recipe_cards_fragment, recipeCardListFragment)
                 .commit();
-        fetchNewRecipes();
     }
 
     @Override
@@ -32,8 +31,4 @@ public class MainActivity extends AppCompatActivity implements RecipeCardListFra
         Logger.d(recipe);
     }
 
-    public void fetchNewRecipes() {
-        RecipesNetworkRoot recipesNetworkRoot = InjectorUtils.provideNetworkDataSource(this);
-        recipesNetworkRoot.fetchRecipes();
-    }
 }

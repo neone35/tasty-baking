@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.content.Intent;
 
 import com.example.aarta.tastybaking.AppExecutors;
 import com.example.aarta.tastybaking.data.models.Recipe;
@@ -21,8 +22,10 @@ public class RecipesNetworkRoot {
     // MutableLiveData with expected return type to notify all observers with postValue
     private final MutableLiveData<List<Recipe>> mDownloadedRecipes;
     private final AppExecutors mExecutors;
+    private final Context mContext;
 
     private RecipesNetworkRoot(Context context, AppExecutors executors) {
+        mContext = context;
         mExecutors = executors;
         mDownloadedRecipes = new MutableLiveData<>();
     }
@@ -41,8 +44,14 @@ public class RecipesNetworkRoot {
         return sInstance;
     }
 
-    public LiveData<List<Recipe>> getCurrentRecipes() {
+    public LiveData<List<Recipe>> getCurrentRecipesLiveData() {
         return mDownloadedRecipes;
+    }
+
+    public void startRecipeFetchService() {
+        Intent intentToFetch = new Intent(mContext, RecipeSyncService.class);
+        mContext.startService(intentToFetch);
+        Logger.d("Service created");
     }
 
     public void fetchRecipes() {
@@ -51,18 +60,15 @@ public class RecipesNetworkRoot {
             try {
                 List<Recipe> recipes = NetworkUtils.getResponseWithUrl(NetworkUtils.RECIPES_URL, NetworkUtils.RECIPES_JSON_NAME);
 
-                // trigger observers of that LiveData
+                // notify observers of LiveData if fetch is successful
                 if (recipes != null && recipes.size() != 0) {
                     Logger.d("JSON not null and has " + recipes.size() + " values");
                     Logger.d("First value is " + recipes.get(0).getName());
-
                     // update LiveData off main thread -> to main thread (postValue)
                     mDownloadedRecipes.postValue(recipes);
-
                 }
             } catch (Exception e) {
-                // Server probably invalid
-                e.printStackTrace();
+                Logger.e("Exception" + e);
             }
         });
     }

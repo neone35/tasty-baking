@@ -31,15 +31,18 @@ public class TastyRepository {
         mRecipesNetworkRoot = recipesNetworkRoot;
         mExecutors = executors;
 
-        // If repository exists, observe LiveData and update database on change
-        LiveData<List<Recipe>> networkData = mRecipesNetworkRoot.getCurrentRecipes();
-        networkData.observeForever(newRecipesFromNetwork -> mExecutors.diskIO().execute(() -> {
+        // While repository exists, observe LiveData and update database on fetch
+        LiveData<List<Recipe>> downloadedRecipes = mRecipesNetworkRoot.getCurrentRecipesLiveData();
+        downloadedRecipes.observeForever(newRecipesFromNetwork -> mExecutors.diskIO().execute(() -> {
             // Delete old recipes if present
+            // Triggered only if database is filled
             if (mRecipeDao.getAll() != null) {
                 mRecipeDao.deleteAllRecipes();
                 Logger.d("Old recipes deleted");
             }
+
             // Insert new recipes into RecipeDatabase
+            // Triggered only if fetch has been made (from service)
             Recipe[] recipeArray;
             if (newRecipesFromNetwork != null) {
                 recipeArray = RecipeUtils.getRecipeArray(newRecipesFromNetwork);
@@ -65,30 +68,28 @@ public class TastyRepository {
         return sInstance;
     }
 
+    // called from MainFragViewModel (1st fetch and observer notification from service)
     public LiveData<List<Recipe>> getCurrentRecipes() {
         initializeData();
         return mRecipeDao.getAll();
     }
 
-    public LiveData<List<Ingredient>> getIngredientsByRecipeId(int id) {
-        initializeData();
-        return mRecipeDao.getIngredients(id);
-    }
-
-    public LiveData<List<Step>> getStepsByRecipeId(int id) {
-        initializeData();
-        return mRecipeDao.getSteps(id);
-    }
+//    public LiveData<List<Recipe>> getIngredientsByRecipeId(int id) {
+//        initializeData();
+//        return mRecipeDao.getIngredientsByRecipeId(id);
+//    }
+//
+//    public LiveData<List<Recipe>> getStepsByRecipeId(int id) {
+//        initializeData();
+//        return mRecipeDao.getStepsByRecipeId(id);
+//    }
 
     private synchronized void initializeData() {
-        // initialize once per lifetime
+        // initialize (& fetch) once per lifetime
         if (mInitialized) return;
         mInitialized = true;
 
-        // for services and jobs
-//        mExecutors.diskIO().execute(() -> {
-//            mRecipesNetworkRoot.getCurrentRecipes();
-//        });
+        // start background service to immediately fetch recipes
+        mExecutors.diskIO().execute(mRecipesNetworkRoot::startRecipeFetchService);
     }
-
 }

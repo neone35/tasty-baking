@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.ui.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         holder.mRecipe = mRecipeList.get(position);
         holder.mIdView.setText(String.valueOf(mRecipeList.get(position).getId()));
         holder.mContentView.setText(mRecipeList.get(position).getName());
+        Logger.d(mRecipeList.get(position).getIngredients().get(0).getQuantity());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {

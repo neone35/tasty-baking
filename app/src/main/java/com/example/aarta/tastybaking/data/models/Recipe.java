@@ -11,43 +11,43 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-@Entity
+@Entity(tableName = "recipes")
 public class Recipe {
 
-    @ColumnInfo
+    @ColumnInfo(name = "id")
     @PrimaryKey
     @SerializedName("id")
     @Expose
     private int id;
-    @ColumnInfo
+    @ColumnInfo(name = "name")
     @SerializedName("name")
     @Expose
     private String name;
-    @Ignore
+    @ColumnInfo(name = "ingredients")
     @SerializedName("ingredients")
     @Expose
-    private List<Ingredient> ingredients = null;
-    @Ignore
+    private List<Ingredient> ingredients;
+    @ColumnInfo(name = "steps")
     @SerializedName("steps")
     @Expose
-    private List<Step> steps = null;
-    @ColumnInfo
+    private List<Step> steps;
+    @ColumnInfo(name = "servings")
     @SerializedName("servings")
     @Expose
     private int servings;
-    @ColumnInfo
+    @ColumnInfo(name = "image")
     @SerializedName("image")
     @Expose
     private String image;
 
     // Constructor used by Room to create Recipes
-    public Recipe(int id, String name, int servings, String image) {
+    public Recipe(int id, String name, int servings, String image, List<Ingredient> ingredients, List<Step> steps) {
         this.id = id;
         this.name = name;
         this.servings = servings;
         this.image = image;
-//        this.ingredients = ingredients;
-//        this.steps = steps;
+        this.ingredients = ingredients;
+        this.steps = steps;
     }
 
     public int getId() {
