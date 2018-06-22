@@ -73,11 +73,11 @@ public class RecipeCardListFragment extends Fragment {
             }
         }
 
-        // Get repository instance (erase existing data & observe MutableLiveData trigger)
+        // Get repository instance (start observing MutableLiveData trigger)
         MainFragViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
         // Tie fragment & ViewModel together
         mViewModel = ViewModelProviders.of(this, factory).get(MainFragViewModel.class);
-        // Trigger service once & observe change in database
+        // Trigger service once & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
                 RecyclerView recyclerView = (RecyclerView) view;

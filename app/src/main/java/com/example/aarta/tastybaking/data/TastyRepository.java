@@ -5,9 +5,7 @@ import android.arch.lifecycle.LiveData;
 import com.example.aarta.tastybaking.AppExecutors;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.example.aarta.tastybaking.data.database.RecipeDao;
-import com.example.aarta.tastybaking.data.models.Ingredient;
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.data.network.RecipesNetworkRoot;
 import com.orhanobut.logger.Logger;
 
@@ -31,8 +29,8 @@ public class TastyRepository {
         mRecipesNetworkRoot = recipesNetworkRoot;
         mExecutors = executors;
 
-        // While repository exists, observe LiveData and update database on fetch
-        LiveData<List<Recipe>> downloadedRecipes = mRecipesNetworkRoot.getCurrentRecipesLiveData();
+        // While repository exists, observe MutableLiveData and insert values on postValue call
+        LiveData<List<Recipe>> downloadedRecipes = mRecipesNetworkRoot.getDownloadedRecipes();
         downloadedRecipes.observeForever(newRecipesFromNetwork -> mExecutors.diskIO().execute(() -> {
             // Delete old recipes if present
             // Triggered only if database is filled
@@ -41,11 +39,12 @@ public class TastyRepository {
                 Logger.d("Old recipes deleted");
             }
 
-            // Insert new recipes into RecipeDatabase
-            // Triggered only if fetch has been made (from service)
+            // Insert new recipes into recipeDB (DAO LiveData's get notified)
+            // Triggered only if fetch has been made (from service). Use offline data if not
             Recipe[] recipeArray;
             if (newRecipesFromNetwork != null) {
                 recipeArray = RecipeUtils.getRecipeArray(newRecipesFromNetwork);
+                // DB changes are detected by LiveData DB monitor (getCurrentRecipes)
                 mRecipeDao.bulkInsert(recipeArray);
                 Logger.d("New values inserted");
             } else {
@@ -68,9 +67,11 @@ public class TastyRepository {
         return sInstance;
     }
 
-    // called from MainFragViewModel (1st fetch and observer notification from service)
+    // called from MainFragViewModel
     public LiveData<List<Recipe>> getCurrentRecipes() {
+        // start fetch in service (once)
         initializeData();
+        // get recipe list from DB
         return mRecipeDao.getAll();
     }
 
@@ -89,7 +90,7 @@ public class TastyRepository {
         if (mInitialized) return;
         mInitialized = true;
 
-        // start background service to immediately fetch recipes
+        // start background service to immediately fetch recipes and notify all observers
         mExecutors.diskIO().execute(mRecipesNetworkRoot::startRecipeFetchService);
     }
 }

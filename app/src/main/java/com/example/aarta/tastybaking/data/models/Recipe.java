@@ -11,6 +11,7 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+// used by gson and room
 @Entity(tableName = "recipes")
 public class Recipe {
 

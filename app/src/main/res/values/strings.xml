@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TastyBaking</string>
+    <string name="ingredients">ingredients</string>
+    <string name="steps">steps</string>
+    <string name="servings">servings</string>
+    <string name="recipe_picture">recipe picture</string>
 </resources>

@@ -44,10 +44,11 @@ public class RecipesNetworkRoot {
         return sInstance;
     }
 
-    public LiveData<List<Recipe>> getCurrentRecipesLiveData() {
+    public LiveData<List<Recipe>> getDownloadedRecipes() {
         return mDownloadedRecipes;
     }
 
+    // calls fetchRecipes from service (before GUI shows up, in BG)
     public void startRecipeFetchService() {
         Intent intentToFetch = new Intent(mContext, RecipeSyncService.class);
         mContext.startService(intentToFetch);
@@ -60,7 +61,7 @@ public class RecipesNetworkRoot {
             try {
                 List<Recipe> recipes = NetworkUtils.getResponseWithUrl(NetworkUtils.RECIPES_URL, NetworkUtils.RECIPES_JSON_NAME);
 
-                // notify observers of LiveData if fetch is successful
+                // notify observers of MutableLiveData (repository) if fetch is successful
                 if (recipes != null && recipes.size() != 0) {
                     Logger.d("JSON not null and has " + recipes.size() + " values");
                     Logger.d("First value is " + recipes.get(0).getName());

@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.ui.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.orhanobut.logger.Logger;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,9 +40,29 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         holder.mRecipe = mRecipeList.get(position);
-        holder.mIdView.setText(String.valueOf(mRecipeList.get(position).getId()));
-        holder.mContentView.setText(mRecipeList.get(position).getName());
-        Logger.d(mRecipeList.get(position).getIngredients().get(0).getQuantity());
+        String recipeName = mRecipeList.get(position).getName();
+        String recipeImageUrl = mRecipeList.get(position).getImage();
+        String ingredientNum = String.valueOf(mRecipeList.get(position).getIngredients().size());
+        String stepsNum = String.valueOf(mRecipeList.get(position).getSteps().size());
+        String servingsNum = String.valueOf(mRecipeList.get(position).getServings());
+
+        if (recipeImageUrl.isEmpty())
+            Picasso.get()
+                    .load(R.drawable.img_food_placeholder)
+                    .placeholder(R.drawable.img_food_placeholder)
+                    .fit()
+                    .into(holder.mRecipeImageView);
+        else
+            Picasso.get()
+                    .load(recipeImageUrl)
+                    .placeholder(R.drawable.img_food_placeholder)
+                    .fit()
+                    .into(holder.mRecipeImageView);
+        holder.mRecipeNameView.setText(recipeName);
+        holder.mIngredientNumView.setText(ingredientNum);
+        holder.mStepsNumView.setText(stepsNum);
+        holder.mServingsNumView.setText(servingsNum);
+//        Logger.d(mRecipeList.get(position).getIngredients().get(0).getQuantity());
 
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
@@ -57,22 +78,28 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         return mRecipeList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final TextView mIdView;
-        final TextView mContentView;
-        public Recipe mRecipe;
+        final ImageView mRecipeImageView;
+        final TextView mRecipeNameView;
+        final TextView mIngredientNumView;
+        final TextView mStepsNumView;
+        final TextView mServingsNumView;
+        Recipe mRecipe;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
+            mRecipeNameView = view.findViewById(R.id.tv_recipe_name);
+            mRecipeImageView = view.findViewById(R.id.iv_recipe);
+            mIngredientNumView = view.findViewById(R.id.tv_ingredient_num);
+            mStepsNumView = view.findViewById(R.id.tv_steps_num);
+            mServingsNumView = view.findViewById(R.id.tv_servings_num);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+//        @Override
+//        public String toString() {
+//            return super.toString() + " '" + mRecipeNameView.getText() + "'";
+//        }
     }
 }

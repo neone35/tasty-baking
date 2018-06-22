@@ -3,6 +3,7 @@ package com.example.aarta.tastybaking.data.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+// Used by gson to parse response (NetworkUtils) && display in UI (room TypeConverter)
 public class Step {
 
     @SerializedName("id")

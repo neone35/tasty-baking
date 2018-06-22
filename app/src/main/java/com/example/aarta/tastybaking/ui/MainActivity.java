@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity implements RecipeCardListFra
         Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
 //        Logger.addLogAdapter(new AndroidLogAdapter());
-        RecipeCardListFragment recipeCardListFragment = RecipeCardListFragment.newInstance(2);
+        // new instance with number of columns for LayoutManager
+        RecipeCardListFragment recipeCardListFragment = RecipeCardListFragment.newInstance(1);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.fl_recipe_cards_fragment, recipeCardListFragment)
