@@ -9,15 +9,15 @@ import android.widget.Button;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Step;
-import com.example.aarta.tastybaking.ui.detail.DetailListFragment.onDetailListFragmentInteractionListener;
+import com.example.aarta.tastybaking.ui.detail.StepsListFragment.onDetailListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
 
-public class DetailListItemAdapter extends RecyclerView.Adapter<DetailListItemAdapter.ViewHolder> {
+public class StepsListItemAdapter extends RecyclerView.Adapter<StepsListItemAdapter.ViewHolder> {
 
     private final Recipe mOneRecipe;
     private final onDetailListFragmentInteractionListener mListener;
 
-    DetailListItemAdapter(Recipe recipe, onDetailListFragmentInteractionListener listener) {
+    StepsListItemAdapter(Recipe recipe, onDetailListFragmentInteractionListener listener) {
         mOneRecipe = recipe;
         mListener = listener;
     }
@@ -26,12 +26,12 @@ public class DetailListItemAdapter extends RecyclerView.Adapter<DetailListItemAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_detail_list_item, parent, false);
+                .inflate(R.layout.steps_detail_list_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DetailListItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StepsListItemAdapter.ViewHolder holder, int position) {
         Step oneStep = mOneRecipe.getSteps().get(position);
         String stepShortDescription = (position + 1) + ". " + oneStep.getShortDescription();
 

@@ -6,4 +6,4 @@
     android:layout_height="match_parent"
     android:layout_margin="8dp"
     tools:context=".ui.main.RecipeCardListFragment"
-    tools:listitem="@layout/fragment_recipe_card_item" />
+    tools:listitem="@layout/recipe_main_card_item" />

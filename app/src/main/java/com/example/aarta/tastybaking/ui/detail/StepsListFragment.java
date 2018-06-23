@@ -24,18 +24,18 @@ import java.util.Objects;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DetailListFragment extends Fragment {
+public class StepsListFragment extends Fragment {
 
     private int mRecipeID = 0;
     private Parcelable recyclerViewState;
     private RecyclerView mRecyclerView;
     private onDetailListFragmentInteractionListener mListener;
 
-    public DetailListFragment() {
+    public StepsListFragment() {
     }
 
-    public static DetailListFragment newInstance(int recipeID) {
-        DetailListFragment fragment = new DetailListFragment();
+    public static StepsListFragment newInstance(int recipeID) {
+        StepsListFragment fragment = new StepsListFragment();
         Bundle args = new Bundle();
         args.putInt(MainActivity.KEY_SELECTED_RECIPE_ID, recipeID);
         fragment.setArguments(args);
@@ -66,7 +66,7 @@ public class DetailListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_detail_list, container, false);
+        final View view = inflater.inflate(R.layout.steps_detail_list, container, false);
 
         // find recyclerView & set observer at one recipe
         if (view instanceof RecyclerView) {
@@ -83,7 +83,7 @@ public class DetailListFragment extends Fragment {
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
             if (view instanceof RecyclerView) {
                 Logger.d("Setting step adapter");
-                mRecyclerView.setAdapter(new DetailListItemAdapter(oneRecipe, mListener));
+                mRecyclerView.setAdapter(new StepsListItemAdapter(oneRecipe, mListener));
             }
         });
 

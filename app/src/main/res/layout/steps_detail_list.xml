@@ -5,5 +5,5 @@
     style="@style/detailBtnMargins"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.detail.DetailListFragment"
-    tools:listitem="@layout/fragment_detail_list_item" />
+    tools:context=".ui.detail.StepsListFragment"
+    tools:listitem="@layout/steps_detail_list_item" />

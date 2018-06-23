@@ -8,11 +8,11 @@ import com.example.aarta.tastybaking.data.models.Recipe;
 
 import java.util.List;
 
-class MainFragViewModel extends ViewModel {
+class MainViewModel extends ViewModel {
 
     private final LiveData<List<Recipe>> mRecipes;
 
-    MainFragViewModel(TastyRepository repository) {
+    MainViewModel(TastyRepository repository) {
         mRecipes = repository.getCurrentRecipes();
     }
 

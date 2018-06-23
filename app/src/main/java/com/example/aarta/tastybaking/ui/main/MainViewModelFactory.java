@@ -18,7 +18,7 @@ public class MainViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new MainFragViewModel(mRepository);
+        return (T) new MainViewModel(mRepository);
     }
 
 }

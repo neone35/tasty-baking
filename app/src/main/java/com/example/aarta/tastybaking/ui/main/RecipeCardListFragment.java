@@ -77,7 +77,7 @@ public class RecipeCardListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_recipe_card_list, container, false);
+        final View view = inflater.inflate(R.layout.recipe_main_card_list, container, false);
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -92,7 +92,7 @@ public class RecipeCardListFragment extends Fragment {
         // Get repository instance (start observing MutableLiveData trigger)
         MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
         // Tie fragment & ViewModel together
-        MainFragViewModel mViewModel = ViewModelProviders.of(this, factory).get(MainFragViewModel.class);
+        MainViewModel mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
         // Trigger service once per lifetime & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {

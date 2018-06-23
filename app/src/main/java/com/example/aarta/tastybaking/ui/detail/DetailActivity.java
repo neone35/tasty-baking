@@ -14,7 +14,7 @@ import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.orhanobut.logger.Logger;
 
-public class DetailActivity extends AppCompatActivity implements DetailListFragment.onDetailListFragmentInteractionListener {
+public class DetailActivity extends AppCompatActivity implements StepsListFragment.onDetailListFragmentInteractionListener {
 
     private static int RECIPE_ID;
     private ActivityDetailBinding detailBinding;
@@ -34,10 +34,10 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
 
         // create fragment only if there was no configuration change
         if (savedInstanceState == null) {
-            DetailListFragment detailListFragment = DetailListFragment.newInstance(RECIPE_ID);
+            StepsListFragment stepsListFragment = StepsListFragment.newInstance(RECIPE_ID);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(R.id.fl_detail_list_holder, detailListFragment)
+                    .add(R.id.fl_detail_list_holder, stepsListFragment)
                     .commit();
         }
 

@@ -11,14 +11,14 @@
 
         <include
             android:id="@+id/inc_recipe_info"
-            layout="@layout/fragment_recipe_card_item" />
+            layout="@layout/recipe_main_card_item" />
 
         <Button
             android:id="@+id/btn_ingredients"
+            android:theme="@style/AppTheme.Button.Secondary"
             style="@style/detailBtnMargins"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@color/colorSecondary"
             android:text="@string/ingredients"
             tools:text="@string/ingredients" />
 
