@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.main.DetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/inc_recipe_info"
+            layout="@layout/fragment_recipe_card_item" />
+
+        <Button
+            android:id="@+id/btn_ingredients"
+            style="@style/detailBtnMargins"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@color/colorSecondary"
+            android:text="@string/ingredients"
+            tools:text="@string/ingredients" />
+
+        <FrameLayout
+            android:id="@+id/fl_detail_list_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</layout>

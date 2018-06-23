@@ -1,9 +1,11 @@
-package com.example.aarta.tastybaking.ui;
+package com.example.aarta.tastybaking.ui.main;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,7 +33,8 @@ public class RecipeCardListFragment extends Fragment {
     private static final String COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private onRecipeCardsListFragmentInteractionListener mListener;
-    private MainFragViewModel mViewModel;
+    private Parcelable recyclerViewState;
+    private RecyclerView mRecyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,6 +61,19 @@ public class RecipeCardListFragment extends Fragment {
         }
     }
 
+    // storing and restoring recyclerview scroll position
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,23 +81,23 @@ public class RecipeCardListFragment extends Fragment {
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            mRecyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
         }
 
         // Get repository instance (start observing MutableLiveData trigger)
-        MainFragViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
+        MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
         // Tie fragment & ViewModel together
-        mViewModel = ViewModelProviders.of(this, factory).get(MainFragViewModel.class);
-        // Trigger service once & observe change in DB calling DAO
+        MainFragViewModel mViewModel = ViewModelProviders.of(this, factory).get(MainFragViewModel.class);
+        // Trigger service once per lifetime & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
-                RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setAdapter(new RecipeCardItemAdapter(recipes, mListener));
+                Logger.d("Setting card list adapter");
+                mRecyclerView.setAdapter(new RecipeCardItemAdapter(recipes, mListener));
             }
         });
 
@@ -117,6 +133,6 @@ public class RecipeCardListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface onRecipeCardsListFragmentInteractionListener {
-        void onListFragmentInteraction(Recipe recipe);
+        void onCardListFragmentInteraction(Recipe recipe);
     }
 }

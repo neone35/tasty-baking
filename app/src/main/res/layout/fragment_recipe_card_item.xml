@@ -1,155 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
+    tools:context=".ui.main.MainActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground">
 
-        <ImageView
-            android:id="@+id/iv_recipe"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/recipe_picture"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/img_food_placeholder" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_recipe_name"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
-            tools:text="Nutella Pie" />
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_number_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_weight="2"
-            android:minWidth="50dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_recipe_name"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/tv_recipe_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_recipe_name">
-
-            <TextView
-                android:id="@+id/tv_ingredient_label"
-                style="@style/cardLabels"
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/iv_recipe"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ingredients"
+                android:contentDescription="@string/recipe_picture"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="ingredients" />
+                tools:src="@drawable/img_food_placeholder" />
 
             <TextView
-                android:id="@+id/tv_ingredient_num"
-                style="@style/cardNumbers"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_recipe_name"
+                style="@style/cardTitle"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:textAppearance="?attr/textAppearanceListItem"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_ingredient_label"
-                app:layout_constraintStart_toStartOf="@+id/tv_ingredient_label"
-                app:layout_constraintTop_toBottomOf="@+id/tv_ingredient_label"
-                tools:text="8" />
-
-        </android.support.constraint.ConstraintLayout>
-
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:minWidth="50dp"
-            app:layout_constraintBottom_toBottomOf="@+id/cl_number_holder"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cl_number_holder"
-            app:layout_constraintTop_toTopOf="@+id/cl_number_holder">
-
-            <TextView
-                android:id="@+id/tv_steps_label"
-                style="@style/cardLabels"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/steps"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="steps" />
+                app:layout_constraintTop_toBottomOf="@+id/iv_recipe"
+                tools:text="Nutella Pie" />
 
-            <TextView
-                android:id="@+id/tv_steps_num"
-                style="@style/cardNumbers"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/cl_number_holder"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_steps_label"
-                app:layout_constraintStart_toStartOf="@+id/tv_steps_label"
-                app:layout_constraintTop_toBottomOf="@+id/tv_steps_label"
-                tools:text="10" />
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_recipe_name"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_recipe_name"
+                app:layout_constraintTop_toTopOf="@+id/tv_recipe_name">
 
-        </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_ingredient_label"
+                    style="@style/cardLabels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ingredients"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="ingredients" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraintLayout3"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:minWidth="50dp"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+                <TextView
+                    android:id="@+id/tv_ingredient_num"
+                    style="@style/cardNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_ingredient_label"
+                    app:layout_constraintStart_toStartOf="@+id/tv_ingredient_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_ingredient_label"
+                    tools:text="8" />
 
-            <TextView
-                android:id="@+id/tv_servings_label"
-                style="@style/cardLabels"
+            </android.support.constraint.ConstraintLayout>
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout2"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/servings"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="@+id/cl_number_holder"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout3"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/cl_number_holder"
+                app:layout_constraintTop_toTopOf="@+id/cl_number_holder">
+
+                <TextView
+                    android:id="@+id/tv_steps_label"
+                    style="@style/cardLabels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/steps"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="steps" />
+
+                <TextView
+                    android:id="@+id/tv_steps_num"
+                    style="@style/cardNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_steps_label"
+                    app:layout_constraintStart_toStartOf="@+id/tv_steps_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_steps_label"
+                    tools:text="10" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="servings" />
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
 
-            <TextView
-                android:id="@+id/tv_servings_num"
-                style="@style/cardNumbers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_servings_label"
-                app:layout_constraintStart_toStartOf="@+id/tv_servings_label"
-                app:layout_constraintTop_toBottomOf="@+id/tv_servings_label"
-                tools:text="4" />
+                <TextView
+                    android:id="@+id/tv_servings_label"
+                    style="@style/cardLabels"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/servings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="servings" />
+
+                <TextView
+                    android:id="@+id/tv_servings_num"
+                    style="@style/cardNumbers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_servings_label"
+                    app:layout_constraintStart_toStartOf="@+id/tv_servings_label"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_servings_label"
+                    tools:text="4" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.constraint.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
 
-</android.support.v7.widget.CardView>
-
-
+</layout>
 

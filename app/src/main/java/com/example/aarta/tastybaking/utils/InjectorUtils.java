@@ -6,7 +6,8 @@ import com.example.aarta.tastybaking.AppExecutors;
 import com.example.aarta.tastybaking.data.TastyRepository;
 import com.example.aarta.tastybaking.data.database.RecipeDatabase;
 import com.example.aarta.tastybaking.data.network.RecipesNetworkRoot;
-import com.example.aarta.tastybaking.ui.MainFragViewModelFactory;
+import com.example.aarta.tastybaking.ui.detail.DetailViewModelFactory;
+import com.example.aarta.tastybaking.ui.main.MainViewModelFactory;
 
 public class InjectorUtils {
 
@@ -25,8 +26,13 @@ public class InjectorUtils {
         return RecipesNetworkRoot.getInstance(context.getApplicationContext(), executors);
     }
 
-    public static MainFragViewModelFactory provideMainViewModelFactory(Context context) {
+    public static MainViewModelFactory provideMainViewModelFactory(Context context) {
         TastyRepository repository = provideRepository(context.getApplicationContext());
-        return new MainFragViewModelFactory(repository);
+        return new MainViewModelFactory(repository);
+    }
+
+    public static DetailViewModelFactory provideDetailViewModelFactory(Context context, int recipeID) {
+        TastyRepository repository = provideRepository(context.getApplicationContext());
+        return new DetailViewModelFactory(repository, recipeID);
     }
 }

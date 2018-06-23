@@ -48,6 +48,8 @@ dependencies {
     // ANDROID ARCHITECTURE COMPONENTS
     implementation "android.arch.lifecycle:extensions:$aac_v" // ViewModel & LiveData
     implementation "android.arch.lifecycle:runtime:$aac_v" // Compat with support library
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:design:27.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:$aac_v"
 
     // 3RD PARTY LIBRARIES

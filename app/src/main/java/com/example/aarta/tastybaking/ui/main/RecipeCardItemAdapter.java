@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking.ui;
+package com.example.aarta.tastybaking.ui.main;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
-import com.example.aarta.tastybaking.ui.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
+import com.example.aarta.tastybaking.ui.main.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.squareup.picasso.Picasso;
 
@@ -46,6 +46,8 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         String stepsNum = String.valueOf(mRecipeList.get(position).getSteps().size());
         String servingsNum = String.valueOf(mRecipeList.get(position).getServings());
 
+        // Show picture in main activity only
+        holder.mRecipeImageView.setVisibility(View.VISIBLE);
         if (recipeImageUrl.isEmpty())
             Picasso.get()
                     .load(R.drawable.img_food_placeholder)
@@ -68,7 +70,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onListFragmentInteraction(holder.mRecipe);
+                mListener.onCardListFragmentInteraction(holder.mRecipe);
             }
         });
     }

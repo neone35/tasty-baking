@@ -1,4 +1,4 @@
-package com.example.aarta.tastybaking.ui;
+package com.example.aarta.tastybaking.ui.main;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;

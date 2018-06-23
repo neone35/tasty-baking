@@ -1,6 +1,7 @@
 package com.example.aarta.tastybaking.data;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
 import com.example.aarta.tastybaking.AppExecutors;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
@@ -69,21 +70,18 @@ public class TastyRepository {
 
     // called from MainFragViewModel
     public LiveData<List<Recipe>> getCurrentRecipes() {
+        Logger.d("Getting all recipes");
         // start fetch in service (once)
         initializeData();
         // get recipe list from DB
         return mRecipeDao.getAll();
     }
 
-//    public LiveData<List<Recipe>> getIngredientsByRecipeId(int id) {
-//        initializeData();
-//        return mRecipeDao.getIngredientsByRecipeId(id);
-//    }
-//
-//    public LiveData<List<Recipe>> getStepsByRecipeId(int id) {
-//        initializeData();
-//        return mRecipeDao.getStepsByRecipeId(id);
-//    }
+    public LiveData<Recipe> getRecipeById(int id) {
+        Logger.d("Getting one recipe");
+        initializeData();
+        return mRecipeDao.getById(id);
+    }
 
     private synchronized void initializeData() {
         // initialize (& fetch) once per lifetime
