@@ -24,19 +24,31 @@ import java.util.Objects;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class StepsListFragment extends Fragment {
+public class DetailListFragment extends Fragment {
 
     private int mRecipeID = 0;
     private Parcelable recyclerViewState;
     private RecyclerView mRecyclerView;
     private onDetailListFragmentInteractionListener mListener;
 
-    public StepsListFragment() {
+    public DetailListFragment() {
     }
 
-    public static StepsListFragment newInstance(int recipeID) {
-        StepsListFragment fragment = new StepsListFragment();
+    public static DetailListFragment newInstance(int recipeID, String stepsOrIngredients) {
+        DetailListFragment fragment = new DetailListFragment();
         Bundle args = new Bundle();
+        args.putInt(MainActivity.KEY_SELECTED_RECIPE_ID, recipeID);
+
+        // put different key to change adapter
+        switch (stepsOrIngredients) {
+            case DetailActivity.SHOW_STEPS:
+                args.putString(DetailActivity.SHOW_STEPS, stepsOrIngredients);
+                break;
+            case DetailActivity.SHOW_INGREDIENTS:
+                args.putString(DetailActivity.SHOW_INGREDIENTS, stepsOrIngredients);
+                break;
+        }
+
         args.putInt(MainActivity.KEY_SELECTED_RECIPE_ID, recipeID);
         fragment.setArguments(args);
         return fragment;
@@ -82,8 +94,14 @@ public class StepsListFragment extends Fragment {
         // And receives data only if it has changed
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
             if (view instanceof RecyclerView) {
-                Logger.d("Setting step adapter");
-                mRecyclerView.setAdapter(new StepsListItemAdapter(oneRecipe, mListener));
+                Logger.d("Setting detail adapter");
+                if (getArguments() != null) {
+                    // set new adapter (with steps or ingredients)
+                    if (getArguments().containsKey(DetailActivity.SHOW_STEPS))
+                        mRecyclerView.setAdapter(new StepListItemAdapter(oneRecipe, mListener));
+                    else if (getArguments().containsKey(DetailActivity.SHOW_INGREDIENTS))
+                        mRecyclerView.setAdapter(new IngredientListItemAdapter(oneRecipe));
+                }
             }
         });
 

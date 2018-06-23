@@ -9,15 +9,15 @@ import android.widget.Button;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Step;
-import com.example.aarta.tastybaking.ui.detail.StepsListFragment.onDetailListFragmentInteractionListener;
+import com.example.aarta.tastybaking.ui.detail.DetailListFragment.onDetailListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
 
-public class StepsListItemAdapter extends RecyclerView.Adapter<StepsListItemAdapter.ViewHolder> {
+public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapter.ViewHolder> {
 
     private final Recipe mOneRecipe;
     private final onDetailListFragmentInteractionListener mListener;
 
-    StepsListItemAdapter(Recipe recipe, onDetailListFragmentInteractionListener listener) {
+    StepListItemAdapter(Recipe recipe, onDetailListFragmentInteractionListener listener) {
         mOneRecipe = recipe;
         mListener = listener;
     }
@@ -31,7 +31,7 @@ public class StepsListItemAdapter extends RecyclerView.Adapter<StepsListItemAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StepsListItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StepListItemAdapter.ViewHolder holder, int position) {
         Step oneStep = mOneRecipe.getSteps().get(position);
         String stepShortDescription = (position + 1) + ". " + oneStep.getShortDescription();
 

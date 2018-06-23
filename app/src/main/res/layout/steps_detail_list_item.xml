@@ -5,7 +5,6 @@
     android:id="@+id/btn_step_details"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    style="@style/detailBtnMargins"
-    android:theme="@style/AppTheme.Button.Primary"
+    android:theme="@style/AppTheme.Button.Secondary"
     android:gravity="start|center"
     tools:text="@string/recipe_step_description" />

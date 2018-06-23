@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements RecipeCardListFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        setActionBar("Tasty baking");
         Stetho.initializeWithDefaults(this);
 
         // new card list fragment instance with number of columns for LayoutManager
@@ -46,6 +47,14 @@ public class MainActivity extends AppCompatActivity implements RecipeCardListFra
         }
     }
 
+    public void setActionBar(String heading) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(heading);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+        }
+    }
 
     @Override
     public void onCardListFragmentInteraction(Recipe recipe) {

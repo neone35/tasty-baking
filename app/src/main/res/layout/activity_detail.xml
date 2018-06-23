@@ -15,7 +15,7 @@
 
         <Button
             android:id="@+id/btn_ingredients"
-            android:theme="@style/AppTheme.Button.Secondary"
+            android:theme="@style/AppTheme.Button.Primary"
             style="@style/detailBtnMargins"
             android:layout_width="match_parent"
             android:layout_height="60dp"
