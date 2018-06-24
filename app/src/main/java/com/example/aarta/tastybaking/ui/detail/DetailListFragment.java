@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
@@ -101,6 +102,8 @@ public class DetailListFragment extends Fragment {
                         mRecyclerView.setAdapter(new StepListItemAdapter(oneRecipe, mListener));
                     else if (getArguments().containsKey(DetailActivity.INGREDIENTS_MODE))
                         mRecyclerView.setAdapter(new IngredientListItemAdapter(oneRecipe));
+                } else {
+                    Toast.makeText(this.getContext(), "Recipe not found", Toast.LENGTH_SHORT).show();
                 }
             }
         });

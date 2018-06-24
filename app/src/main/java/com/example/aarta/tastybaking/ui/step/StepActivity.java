@@ -6,16 +6,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.aarta.tastybaking.R;
+import com.example.aarta.tastybaking.data.models.Recipe;
+import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.databinding.ActivityStepBinding;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
+import com.orhanobut.logger.Logger;
 
-public class StepActivity extends AppCompatActivity {
+import java.util.Objects;
+
+public class StepActivity extends AppCompatActivity implements StepFragment.onStepFragmentInteractionListener {
 
     private static int RECIPE_ID;
     private static int STEP_ID;
     ActivityStepBinding stepBinding;
     private FragmentManager fragmentManager;
+    public static final String KEY_PREVIOUS = "previous_click";
+    public static final String KEY_NEXT = "next_click";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +42,33 @@ public class StepActivity extends AppCompatActivity {
                 fragmentManager.beginTransaction()
                         .add(R.id.fl_step_holder, stepsListFragment)
                         .commit();
-                // TODO: switch to another step on click
             }
         }
+    }
+
+    public void switchStep(int recipeID, int stepID) {
+        StepFragment stepsListFragment = StepFragment.newInstance(recipeID, stepID);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fl_step_holder, stepsListFragment)
+                .commit();
+    }
+
+    @Override
+    public void onStepFragmentInteraction(Recipe currentRecipe, int currentStepID, String whichBtn) {
+        int nextStepID = -1;
+        int currentRecipeStepsNum = currentRecipe.getSteps().size();
+        if (whichBtn.equals(KEY_PREVIOUS)) {
+            if (currentStepID > 0)
+                nextStepID = currentStepID - 1;
+        } else if (whichBtn.equals(KEY_NEXT)) {
+            if (currentStepID < currentRecipeStepsNum)
+                nextStepID = currentStepID + 1;
+        }
+
+        int currentRecipeID = currentRecipe.getId();
+        if (nextStepID != -1)
+            switchStep(currentRecipeID, nextStepID);
+        Logger.d("current step: ", currentStepID);
+        Logger.d("next step: ", nextStepID);
     }
 }
