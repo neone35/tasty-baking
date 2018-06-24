@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.aarta.tastybaking.R;
+import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
 
@@ -78,7 +78,7 @@ public class DetailListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.steps_detail_list, container, false);
+        final View view = inflater.inflate(R.layout.detail_step_list, container, false);
 
         // find recyclerView & set observer at one recipe
         if (view instanceof RecyclerView) {
@@ -126,6 +126,6 @@ public class DetailListFragment extends Fragment {
     }
 
     public interface onDetailListFragmentInteractionListener {
-        void onDetailListFragmentInteraction(Step step);
+        void onDetailListFragmentInteraction(Recipe recipe, Step step);
     }
 }

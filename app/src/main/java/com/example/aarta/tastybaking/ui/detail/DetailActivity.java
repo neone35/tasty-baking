@@ -1,19 +1,23 @@
 package com.example.aarta.tastybaking.ui.detail;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.aarta.tastybaking.R;
+import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.databinding.ActivityDetailBinding;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
+import com.example.aarta.tastybaking.ui.step.StepActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.orhanobut.logger.Logger;
+
+import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements DetailListFragment.onDetailListFragmentInteractionListener {
 
@@ -27,6 +31,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     private static String steps;
     private static String seeIngredients;
     private static String seeSteps;
+    public static final String KEY_SELECTED_STEP_ID = "selected_step_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +91,15 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     }
 
     public void switchFragment(String buttonText, String actionBarTitle, String mode) {
-        Logger.d(mode);
+//        Logger.d(mode);
         // change UI
-        setActionBar(actionBarTitle);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(actionBarTitle);
         detailBinding.btnIngredients.setText(buttonText);
         // replace fragment on click
         switch (mode) {
             case STEPS_MODE:
                 detailBinding.btnIngredients.setOnClickListener(v -> {
-                    // switch to steps ingredients on click
+                    // switch to ingredients on click
                     DetailListFragment ingredientListFragment = DetailListFragment.newInstance(RECIPE_ID, INGREDIENTS_MODE);
                     fragmentManager.beginTransaction()
                             .replace(R.id.fl_detail_list_holder, ingredientListFragment)
@@ -118,8 +123,8 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     }
 
     private void backStackNumListener() {
+//        Logger.d(backStackNum);
         // listen for backStack change
-        Logger.d(backStackNum);
         fragmentManager.addOnBackStackChangedListener(() -> {
             backStackNum = fragmentManager.getBackStackEntryCount();
             Logger.d(backStackNum);
@@ -164,9 +169,15 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         }
     }
 
-
     @Override
-    public void onDetailListFragmentInteraction(Step step) {
-        Logger.d(step.getDescription());
+    public void onDetailListFragmentInteraction(Recipe selectedRecipe, Step selectedStep) {
+        if (findViewById(R.id.ll_detail_tablet) == null) {
+            Intent stepActivityIntent = new Intent(this, StepActivity.class);
+            Bundle detailBundle = new Bundle();
+            detailBundle.putInt(MainActivity.KEY_SELECTED_RECIPE_ID, selectedRecipe.getId());
+            detailBundle.putInt(KEY_SELECTED_STEP_ID, selectedStep.getId());
+            stepActivityIntent.putExtras(detailBundle);
+            startActivity(stepActivityIntent);
+        }
     }
 }

@@ -77,7 +77,7 @@ public class RecipeCardListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.recipe_main_card_list, container, false);
+        final View view = inflater.inflate(R.layout.main_recipe_card_list, container, false);
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();

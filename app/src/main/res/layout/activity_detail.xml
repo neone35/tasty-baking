@@ -11,7 +11,7 @@
 
         <include
             android:id="@+id/inc_recipe_info"
-            layout="@layout/recipe_main_card_item" />
+            layout="@layout/main_recipe_card_item" />
 
         <Button
             android:id="@+id/btn_ingredients"

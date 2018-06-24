@@ -7,4 +7,9 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="action_settings">Settings</string>
     <string name="recipe_step_description">Recipe Introduction</string>
+    <string name="ingredient_name_sample">cake flour</string>
+    <string name="quantity_sample">1.5</string>
+    <string name="measure_sample">CUP</string>
+    <string name="prev_step">&#60; prev step</string>
+    <string name="next_step">next step &#62;</string>
 </resources>

@@ -50,6 +50,7 @@ dependencies {
     implementation "android.arch.lifecycle:runtime:$aac_v" // Compat with support library
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:$aac_v"
 
     // 3RD PARTY LIBRARIES
@@ -57,8 +58,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_v" // network calls
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_v" // gson & retrofit
     implementation 'com.orhanobut:logger:2.2.0' // logging
-    implementation "android.arch.persistence.room:runtime:$room_v-rc1" // database
-    annotationProcessor "android.arch.persistence.room:compiler:$room_v-rc1"
+    implementation "android.arch.persistence.room:runtime:$room_v" // database
+    annotationProcessor "android.arch.persistence.room:compiler:$room_v"
     implementation 'com.squareup.picasso:picasso:2.71828' // loading images
 
     // TEST DEPENDENCIES

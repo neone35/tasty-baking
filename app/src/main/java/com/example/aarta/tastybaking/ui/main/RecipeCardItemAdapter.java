@@ -33,7 +33,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recipe_main_card_item, parent, false);
+                .inflate(R.layout.main_recipe_card_item, parent, false);
         return new ViewHolder(view);
     }
 

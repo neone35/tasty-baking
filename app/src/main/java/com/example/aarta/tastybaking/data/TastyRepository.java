@@ -35,13 +35,13 @@ public class TastyRepository {
         downloadedRecipes.observeForever(newRecipesFromNetwork -> mExecutors.diskIO().execute(() -> {
             // Delete old recipes if present
             // Triggered only if database is filled
-            if (mRecipeDao.getAll() != null) {
-                mRecipeDao.deleteAllRecipes();
-                Logger.d("Old recipes deleted");
-            }
+//            if (mRecipeDao.getAll() != null) {
+//                mRecipeDao.deleteAllRecipes();
+//                Logger.d("Old recipes deleted");
+//            }
 
-            // Insert new recipes into recipeDB (DAO LiveData's get notified)
-            // Triggered only if fetch has been made (from service). Use offline data if not
+            // Insert new recipes into recipeDB (DAO LiveData observers get notified)
+            // Triggered only if fetch has been made (from service). Use offline data otherwise
             Recipe[] recipeArray;
             if (newRecipesFromNetwork != null) {
                 recipeArray = RecipeUtils.getRecipeArray(newRecipesFromNetwork);

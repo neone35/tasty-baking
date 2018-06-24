@@ -26,7 +26,7 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.steps_detail_list_item, parent, false);
+                .inflate(R.layout.detail_step_list_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -40,7 +40,7 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onDetailListFragmentInteraction(oneStep);
+                mListener.onDetailListFragmentInteraction(mOneRecipe, oneStep);
             }
         });
     }

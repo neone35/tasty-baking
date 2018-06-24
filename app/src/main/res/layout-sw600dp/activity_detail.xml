@@ -5,19 +5,46 @@
     tools:context=".ui.main.DetailActivity">
 
     <LinearLayout
+        android:id="@+id/ll_detail_tablet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <FrameLayout
-            android:id="@+id/fl_detail_list_holder_tablet"
+        <LinearLayout
             android:layout_width="250dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/fl_step_detail_holder_tablet"
+            <include
+                android:id="@+id/inc_recipe_info"
+                layout="@layout/main_recipe_card_item" />
+
+            <Button
+                android:id="@+id/btn_ingredients"
+                style="@style/detailBtnMargins"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="@string/ingredients"
+                android:theme="@style/AppTheme.Button.Primary"
+                tools:text="@string/ingredients" />
+
+            <FrameLayout
+                android:id="@+id/fl_detail_list_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/fl_step_holder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
