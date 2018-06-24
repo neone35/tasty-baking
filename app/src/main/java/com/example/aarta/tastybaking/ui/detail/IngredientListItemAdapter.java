@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Ingredient;
@@ -22,7 +23,7 @@ public class IngredientListItemAdapter extends RecyclerView.Adapter<IngredientLi
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.steps_detail_list_item, parent, false);
+                .inflate(R.layout.ingredients_detail_list_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -31,7 +32,7 @@ public class IngredientListItemAdapter extends RecyclerView.Adapter<IngredientLi
         Ingredient oneIngredient = mOneRecipe.getIngredients().get(position);
         String ingredientName = (position + 1) + ". " + oneIngredient.getIngredient();
 
-        holder.mStepDetailsBtn.setText(ingredientName);
+        holder.mIngredientItem.setText(ingredientName);
     }
 
     @Override
@@ -41,12 +42,12 @@ public class IngredientListItemAdapter extends RecyclerView.Adapter<IngredientLi
 
     class ViewHolder extends RecyclerView.ViewHolder {
         final View mView;
-        final Button mStepDetailsBtn;
+        final TextView mIngredientItem;
 
         ViewHolder(View view) {
             super(view);
             mView = view;
-            mStepDetailsBtn = view.findViewById(R.id.btn_step_details);
+            mIngredientItem = view.findViewById(R.id.tv_ingredient_item);
         }
     }
 }

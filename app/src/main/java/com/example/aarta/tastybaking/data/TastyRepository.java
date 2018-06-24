@@ -57,7 +57,7 @@ public class TastyRepository {
     public synchronized static TastyRepository getInstance(
             RecipeDao recipeDao, RecipesNetworkRoot recipesNetworkRoot,
             AppExecutors executors) {
-        Logger.d("Getting the repository");
+//        Logger.d("Getting the repository");
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = new TastyRepository(recipeDao, recipesNetworkRoot,
@@ -70,7 +70,7 @@ public class TastyRepository {
 
     // called from MainFragViewModel
     public LiveData<List<Recipe>> getCurrentRecipes() {
-        Logger.d("Getting all recipes");
+//        Logger.d("Getting all recipes");
         // start fetch in service (once)
         initializeData();
         // get recipe list from DB
@@ -78,7 +78,7 @@ public class TastyRepository {
     }
 
     public LiveData<Recipe> getRecipeById(int id) {
-        Logger.d("Getting one recipe");
+//        Logger.d("Getting one recipe");
         initializeData();
         return mRecipeDao.getById(id);
     }

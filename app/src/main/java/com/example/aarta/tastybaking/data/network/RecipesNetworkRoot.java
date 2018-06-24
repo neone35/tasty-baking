@@ -32,7 +32,7 @@ public class RecipesNetworkRoot {
 
     // Get singleton for this class
     public static RecipesNetworkRoot getInstance(Context context, AppExecutors executors) {
-        Logger.d("Getting the network data source");
+//        Logger.d("Getting the network data source");
         // Only one instance of this class can be created
         if (sInstance == null) {
             // and only one thread can access this method at a time for data consistency

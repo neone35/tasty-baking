@@ -22,7 +22,7 @@ public abstract class RecipeDatabase extends RoomDatabase {
     private static RecipeDatabase sInstance;
 
     public static RecipeDatabase getInstance(Context context) {
-        Logger.d("Getting the database");
+//        Logger.d("Getting the database");
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),

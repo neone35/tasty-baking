@@ -41,11 +41,11 @@ public class DetailListFragment extends Fragment {
 
         // put different key to change adapter
         switch (stepsOrIngredients) {
-            case DetailActivity.SHOW_STEPS:
-                args.putString(DetailActivity.SHOW_STEPS, stepsOrIngredients);
+            case DetailActivity.STEPS_MODE:
+                args.putString(DetailActivity.STEPS_MODE, stepsOrIngredients);
                 break;
-            case DetailActivity.SHOW_INGREDIENTS:
-                args.putString(DetailActivity.SHOW_INGREDIENTS, stepsOrIngredients);
+            case DetailActivity.INGREDIENTS_MODE:
+                args.putString(DetailActivity.INGREDIENTS_MODE, stepsOrIngredients);
                 break;
         }
 
@@ -94,12 +94,12 @@ public class DetailListFragment extends Fragment {
         // And receives data only if it has changed
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
             if (view instanceof RecyclerView) {
-                Logger.d("Setting detail adapter");
+//                Logger.d("Setting detail adapter");
                 if (getArguments() != null) {
                     // set new adapter (with steps or ingredients)
-                    if (getArguments().containsKey(DetailActivity.SHOW_STEPS))
+                    if (getArguments().containsKey(DetailActivity.STEPS_MODE))
                         mRecyclerView.setAdapter(new StepListItemAdapter(oneRecipe, mListener));
-                    else if (getArguments().containsKey(DetailActivity.SHOW_INGREDIENTS))
+                    else if (getArguments().containsKey(DetailActivity.INGREDIENTS_MODE))
                         mRecyclerView.setAdapter(new IngredientListItemAdapter(oneRecipe));
                 }
             }
