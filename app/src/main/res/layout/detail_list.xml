@@ -6,4 +6,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.detail.DetailListFragment"
-    tools:listitem="@layout/detail_step_list_item" />
+    tools:listitem="@layout/detail_list_step_item" />

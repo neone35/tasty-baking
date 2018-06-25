@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 
 import com.example.aarta.tastybaking.data.TastyRepository;
 
-public class DetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class OneRecipeViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final TastyRepository mRepository;
     private final int mRecipeID;
 
-    public DetailViewModelFactory(TastyRepository repository, int recipeID) {
+    public OneRecipeViewModelFactory(TastyRepository repository, int recipeID) {
         this.mRepository = repository;
         this.mRecipeID = recipeID;
     }
@@ -20,7 +20,7 @@ public class DetailViewModelFactory extends ViewModelProvider.NewInstanceFactory
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new DetailViewModel(mRepository, mRecipeID);
+        return (T) new OneRecipeViewModel(mRepository, mRecipeID);
     }
 
 }

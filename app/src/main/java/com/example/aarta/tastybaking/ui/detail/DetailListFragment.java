@@ -79,7 +79,7 @@ public class DetailListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.detail_step_list, container, false);
+        final View view = inflater.inflate(R.layout.detail_list, container, false);
 
         // find recyclerView & set observer at one recipe
         if (view instanceof RecyclerView) {
@@ -88,9 +88,9 @@ public class DetailListFragment extends Fragment {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         }
         // Get repository instance
-        DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(Objects.requireNonNull(this.getContext()), mRecipeID);
+        OneRecipeViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(Objects.requireNonNull(this.getContext()), mRecipeID);
         // Tie fragment & ViewModel together
-        DetailViewModel mViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+        OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         // Observer also gets notified when lifecycle owner switches from inactive to active
         // And receives data only if it has changed
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {

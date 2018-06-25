@@ -5,5 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
-    tools:context=".ui.main.RecipeCardListFragment"
-    tools:listitem="@layout/main_recipe_card_item" />
+    tools:context=".ui.main.RecipesCardListFragment"
+    tools:listitem="@layout/main_list_recipe_card_item" />

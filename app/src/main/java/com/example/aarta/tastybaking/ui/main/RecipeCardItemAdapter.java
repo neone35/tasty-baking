@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
-import com.example.aarta.tastybaking.ui.main.RecipeCardListFragment.onRecipeCardsListFragmentInteractionListener;
+import com.example.aarta.tastybaking.ui.main.RecipesCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +33,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.main_recipe_card_item, parent, false);
+                .inflate(R.layout.main_list_recipe_card_item, parent, false);
         return new ViewHolder(view);
     }
 

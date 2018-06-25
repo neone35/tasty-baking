@@ -6,12 +6,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
             android:id="@+id/inc_recipe_info"
-            layout="@layout/main_recipe_card_item" />
+            layout="@layout/main_list_recipe_card_item" />
 
         <Button
             android:id="@+id/btn_ingredients"
@@ -26,7 +26,8 @@
             android:id="@+id/fl_detail_list_holder"
             android:layout_width="match_parent"
             android:layout_marginBottom="8dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:layout="@layout/detail_list" />
 
     </LinearLayout>
 

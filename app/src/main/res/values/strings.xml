@@ -12,4 +12,5 @@
     <string name="measure_sample">CUP</string>
     <string name="prev_step">&#60; prev step</string>
     <string name="next_step">next step &#62;</string>
+    <string name="ingredients_short">ingrd</string>
 </resources>

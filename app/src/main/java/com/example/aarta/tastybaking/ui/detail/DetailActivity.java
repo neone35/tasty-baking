@@ -14,6 +14,7 @@ import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.databinding.ActivityDetailBinding;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.ui.step.StepActivity;
+import com.example.aarta.tastybaking.ui.step.StepFragment;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.orhanobut.logger.Logger;
 
@@ -32,6 +33,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     private static String seeIngredients;
     private static String seeSteps;
     public static final String KEY_SELECTED_STEP_ID = "selected_step_id";
+    public static final String KEY_HIDE_STEP_BTNS = "hide_step_btns";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,9 +147,9 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
 
     private void setOneRecipeInfo(int recipeID) {
         // Get repository instance
-        DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(this, recipeID);
+        OneRecipeViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(this, recipeID);
         // Tie fragment & ViewModel together
-        DetailViewModel mViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+        OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
             if (oneRecipe != null) {
                 String recipeName = oneRecipe.getName();
@@ -171,6 +173,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
 
     @Override
     public void onDetailListFragmentInteraction(Recipe selectedRecipe, Step selectedStep) {
+        // mobile layout
         if (findViewById(R.id.ll_detail_tablet) == null) {
             Intent stepActivityIntent = new Intent(this, StepActivity.class);
             Bundle detailBundle = new Bundle();
@@ -178,6 +181,11 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
             detailBundle.putInt(KEY_SELECTED_STEP_ID, selectedStep.getId());
             stepActivityIntent.putExtras(detailBundle);
             startActivity(stepActivityIntent);
+        } else { // tablet layout
+            StepFragment stepsListFragment = StepFragment.newInstance(RECIPE_ID, selectedStep.getId());
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fl_step_fragment_holder, stepsListFragment)
+                    .commit();
         }
     }
 }

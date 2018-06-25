@@ -17,9 +17,8 @@ import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
-import com.example.aarta.tastybaking.ui.detail.DetailListFragment;
-import com.example.aarta.tastybaking.ui.detail.DetailViewModel;
-import com.example.aarta.tastybaking.ui.detail.DetailViewModelFactory;
+import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModel;
+import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModelFactory;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.orhanobut.logger.Logger;
@@ -67,9 +66,9 @@ public class StepFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_step, container, false);
 
         // Get repository instance
-        DetailViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(Objects.requireNonNull(this.getContext()), mRecipeID);
+        OneRecipeViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(Objects.requireNonNull(this.getContext()), mRecipeID);
         // Tie fragment & ViewModel together
-        DetailViewModel mViewModel = ViewModelProviders.of(this, factory).get(DetailViewModel.class);
+        OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
             TextView tvVideoUrl = view.findViewById(R.id.step_media_player);
             TextView tvShortDescr = view.findViewById(R.id.tv_step_short_description);
@@ -83,19 +82,26 @@ public class StepFragment extends Fragment {
                     tvShortDescr.setText(oneStep.getShortDescription());
                     tvLongDescr.setText(oneStep.getDescription());
 
-                    btnPreviousStep.setOnClickListener(v -> {
-                        if (null != mListener) {
-                            mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_PREVIOUS);
-                        }
-                    });
-                    btnNextStep.setOnClickListener(v -> {
-                        if (null != mListener) {
-                            mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_NEXT);
-                        }
-                    });
+                    Logger.d(getActivity());
+                    // enable step switch buttons on mobile
+                    if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
+                        // It's StepActivity (mobile)
+                        btnPreviousStep.setOnClickListener(v -> {
+                            if (null != mListener) {
+                                mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_PREVIOUS);
+                            }
+                        });
+                        btnNextStep.setOnClickListener(v -> {
+                            if (null != mListener) {
+                                mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_NEXT);
+                            }
+                        });
+                    }
                 } else {
                     Toast.makeText(this.getContext(), "Recipe step not found", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(this.getContext(), "Recipe not found", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -107,9 +113,6 @@ public class StepFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof onStepFragmentInteractionListener) {
             mListener = (onStepFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement onStepFragmentInteractionListener");
         }
     }
 

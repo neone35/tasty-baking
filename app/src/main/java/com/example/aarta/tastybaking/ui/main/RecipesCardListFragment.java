@@ -28,7 +28,7 @@ import java.util.Objects;
  * Activities containing this fragment MUST implement the {@link onRecipeCardsListFragmentInteractionListener}
  * interface.
  */
-public class RecipeCardListFragment extends Fragment {
+public class RecipesCardListFragment extends Fragment {
 
     private static final String COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
@@ -40,11 +40,11 @@ public class RecipeCardListFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public RecipeCardListFragment() {
+    public RecipesCardListFragment() {
     }
 
-    public static RecipeCardListFragment newInstance(int columnCount) {
-        RecipeCardListFragment fragment = new RecipeCardListFragment();
+    public static RecipesCardListFragment newInstance(int columnCount) {
+        RecipesCardListFragment fragment = new RecipesCardListFragment();
         Bundle args = new Bundle();
         args.putInt(COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -77,7 +77,7 @@ public class RecipeCardListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.main_recipe_card_list, container, false);
+        final View view = inflater.inflate(R.layout.main_list, container, false);
 
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -90,9 +90,9 @@ public class RecipeCardListFragment extends Fragment {
         }
 
         // Get repository instance (start observing MutableLiveData trigger)
-        MainViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
+        RecipesViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
         // Tie fragment & ViewModel together
-        MainViewModel mViewModel = ViewModelProviders.of(this, factory).get(MainViewModel.class);
+        RecipesViewModel mViewModel = ViewModelProviders.of(this, factory).get(RecipesViewModel.class);
         // Trigger service once per lifetime & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
