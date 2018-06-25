@@ -13,11 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
-import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
@@ -30,8 +30,6 @@ import java.util.Objects;
  */
 public class RecipesCardListFragment extends Fragment {
 
-    private static final String COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private onRecipeCardsListFragmentInteractionListener mListener;
     private Parcelable recyclerViewState;
     private RecyclerView mRecyclerView;
@@ -41,24 +39,6 @@ public class RecipesCardListFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public RecipesCardListFragment() {
-    }
-
-    public static RecipesCardListFragment newInstance(int columnCount) {
-        RecipesCardListFragment fragment = new RecipesCardListFragment();
-        Bundle args = new Bundle();
-        args.putInt(COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Logger.addLogAdapter(new AndroidLogAdapter());
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(COLUMN_COUNT);
-        }
     }
 
     // storing and restoring recyclerview scroll position
@@ -82,10 +62,15 @@ public class RecipesCardListFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             mRecyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            int tabletFragmentID = R.id.cards_list_holder_tablet;
+            // set linear (mobile) or grid (tablet) layout manager
+            if (getFragmentManager() != null) {
+                if (getFragmentManager().findFragmentById(tabletFragmentID) == null) {
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+                } else {
+                    int columnCount = 3;
+                    mRecyclerView.setLayoutManager(new GridLayoutManager(context, columnCount));
+                }
             }
         }
 

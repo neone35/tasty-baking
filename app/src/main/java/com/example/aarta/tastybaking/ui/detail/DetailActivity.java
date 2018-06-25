@@ -33,13 +33,13 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     private static String seeIngredients;
     private static String seeSteps;
     public static final String KEY_SELECTED_STEP_ID = "selected_step_id";
-    public static final String KEY_HIDE_STEP_BTNS = "hide_step_btns";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         detailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         fragmentManager = getSupportFragmentManager();
+        hideRecipeDetailImage();
 
         // get needed resources
         ingredients = getResources().getString(R.string.ingredients).substring(0, 1).toUpperCase() +
@@ -49,25 +49,26 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         seeIngredients = "see " + getResources().getString(R.string.ingredients);
         seeSteps = "see " + getResources().getString(R.string.steps);
 
-        // check if intent bundle received successfully and setup view
+        // check if intent bundle received successfully
         Bundle mainExtrasBundle = getIntent().getExtras();
         if (mainExtrasBundle != null) {
             RECIPE_ID = mainExtrasBundle.getInt(MainActivity.KEY_SELECTED_RECIPE_ID);
-            setupRecipeDetailView();
-            setOneRecipeInfo(RECIPE_ID);
-            // only create initial fragment if there was no configuration change
-            if (savedInstanceState == null) {
-                // add initial fragment
-                DetailListFragment stepsListFragment = DetailListFragment.newInstance(RECIPE_ID, STEPS_MODE);
-                fragmentManager.beginTransaction()
-                        .add(R.id.fl_detail_list_holder, stepsListFragment)
-                        .commit();
-                // set initial mode
-                switchFragment(seeIngredients, steps, STEPS_MODE);
-            }
-            // always listen for fragment back stack num change
-            backStackNumListener();
         }
+
+        // setup view using RECIPE_ID from bundle (parent) or field (child)
+        setOneRecipeInfo(RECIPE_ID);
+        // only create initial fragment if there was no configuration change
+        if (savedInstanceState == null) {
+            // add initial fragment
+            DetailListFragment stepsListFragment = DetailListFragment.newInstance(RECIPE_ID, STEPS_MODE);
+            fragmentManager.beginTransaction()
+                    .add(R.id.fl_detail_list_holder, stepsListFragment)
+                    .commit();
+            // set initial mode
+            switchFragment(seeIngredients, steps, STEPS_MODE);
+        }
+        // always listen for fragment back stack num change
+        backStackNumListener();
     }
 
     @Override
@@ -129,7 +130,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         // listen for backStack change
         fragmentManager.addOnBackStackChangedListener(() -> {
             backStackNum = fragmentManager.getBackStackEntryCount();
-            Logger.d(backStackNum);
+//            Logger.d(backStackNum);
             if (backStackNum == 0) {
                 // steps has been clicked
                 switchFragment(seeIngredients, steps, STEPS_MODE);
@@ -140,7 +141,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         });
     }
 
-    private void setupRecipeDetailView() {
+    private void hideRecipeDetailImage() {
         // hide recipe image in detail only
         detailBinding.incRecipeInfo.ivRecipe.setVisibility(View.INVISIBLE);
     }
@@ -162,13 +163,6 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
                 detailBinding.incRecipeInfo.tvServingsNum.setText(servingsNum);
             }
         });
-    }
-
-    public void setActionBar(String heading) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(heading);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override

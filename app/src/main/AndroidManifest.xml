@@ -31,7 +31,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.MainActivity" />
         </activity>
-        <activity android:name=".ui.step.StepActivity"></activity>
+
+        <activity
+            android:name=".ui.step.StepActivity"
+            android:label="@string/step_details"
+            android:parentActivityName=".ui.detail.DetailActivity"
+            android:theme="@style/AppTheme">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.detail.DetailActivity" />
+        </activity>
+
     </application>
 
 </manifest>

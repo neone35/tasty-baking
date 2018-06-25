@@ -13,4 +13,5 @@
     <string name="prev_step">&#60; prev step</string>
     <string name="next_step">next step &#62;</string>
     <string name="ingredients_short">ingrd</string>
+    <string name="step_details">Step details</string>
 </resources>

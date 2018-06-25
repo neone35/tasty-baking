@@ -15,13 +15,10 @@ import com.example.aarta.tastybaking.ui.main.MainActivity;
 
 public class StepActivity extends AppCompatActivity implements StepFragment.onStepFragmentInteractionListener {
 
-    private static int RECIPE_ID;
-    private static int STEP_ID;
     ActivityStepBinding stepBinding;
     private FragmentManager fragmentManager;
     public static final String KEY_PREVIOUS = "previous_click";
     public static final String KEY_NEXT = "next_click";
-    private Step oneStep = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +29,8 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
         // check if intent bundle received successfully and setup view
         Bundle mainExtrasBundle = getIntent().getExtras();
         if (mainExtrasBundle != null) {
-            RECIPE_ID = mainExtrasBundle.getInt(MainActivity.KEY_SELECTED_RECIPE_ID);
-            STEP_ID = mainExtrasBundle.getInt(DetailActivity.KEY_SELECTED_STEP_ID);
+            int RECIPE_ID = mainExtrasBundle.getInt(MainActivity.KEY_SELECTED_RECIPE_ID);
+            int STEP_ID = mainExtrasBundle.getInt(DetailActivity.KEY_SELECTED_STEP_ID);
             // only create initial fragment if there was no configuration change
             if (savedInstanceState == null) {
                 // add initial fragment
@@ -41,6 +38,7 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
                 fragmentManager.beginTransaction()
                         .add(R.id.fl_step_fragment_holder, stepsListFragment)
                         .commit();
+                setupActionBar(getResources().getString(R.string.step_details));
             }
         }
     }
@@ -52,6 +50,7 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
                 .commit();
     }
 
+    // prev / next step button controller
     @Override
     public void onStepFragmentInteraction(Recipe currentRecipe, int currentStepID, String whichBtn) {
         int nextStepID = -1;
@@ -70,11 +69,15 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
                 noStepsToast.show();
         }
 
-//        Logger.d(currentStepID);
-//        Logger.d(nextStepID);
-
         int currentRecipeID = currentRecipe.getId();
         if (nextStepID != -1)
             switchStep(currentRecipeID, nextStepID);
+    }
+
+    public void setupActionBar(String heading) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(heading);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 }

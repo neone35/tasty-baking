@@ -81,9 +81,9 @@ public class StepFragment extends Fragment {
                     tvVideoUrl.setText(oneStep.getVideoURL());
                     tvShortDescr.setText(oneStep.getShortDescription());
                     tvLongDescr.setText(oneStep.getDescription());
+//                    Logger.d(getActivity());
 
-                    Logger.d(getActivity());
-                    // enable step switch buttons on mobile
+                    // enable step switch buttons on mobile only
                     if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
                         // It's StepActivity (mobile)
                         btnPreviousStep.setOnClickListener(v -> {
@@ -96,6 +96,7 @@ public class StepFragment extends Fragment {
                                 mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_NEXT);
                             }
                         });
+                        // on tablet buttons are GONE, so no need to set up listeners
                     }
                 } else {
                     Toast.makeText(this.getContext(), "Recipe step not found", Toast.LENGTH_SHORT).show();
