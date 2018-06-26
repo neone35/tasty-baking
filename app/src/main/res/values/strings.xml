@@ -14,4 +14,6 @@
     <string name="next_step">next step &#62;</string>
     <string name="ingredients_short">ingrd</string>
     <string name="step_details">Step details</string>
+    <string name="play_button">play button</string>
+    <string name="pause_button">pause button</string>
 </resources>

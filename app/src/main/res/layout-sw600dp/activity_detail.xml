@@ -29,7 +29,7 @@
                 tools:text="@string/ingredients" />
 
             <FrameLayout
-                android:id="@+id/fl_detail_list_holder"
+                android:id="@+id/frag_detail_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:layout="@layout/detail_list" />
@@ -42,7 +42,7 @@
             android:orientation="vertical">
 
             <FrameLayout
-                android:id="@+id/fl_step_fragment_holder"
+                android:id="@+id/frag_step"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:layout="@layout/fragment_step" />

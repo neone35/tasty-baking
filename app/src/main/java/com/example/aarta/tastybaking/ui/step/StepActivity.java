@@ -4,15 +4,16 @@ import android.databinding.DataBindingUtil;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.databinding.ActivityStepBinding;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 
+// used on mobile only
 public class StepActivity extends AppCompatActivity implements StepFragment.onStepFragmentInteractionListener {
 
     ActivityStepBinding stepBinding;
@@ -36,7 +37,7 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
                 // add initial fragment
                 StepFragment stepsListFragment = StepFragment.newInstance(RECIPE_ID, STEP_ID);
                 fragmentManager.beginTransaction()
-                        .add(R.id.fl_step_fragment_holder, stepsListFragment)
+                        .add(R.id.frag_step, stepsListFragment)
                         .commit();
                 setupActionBar(getResources().getString(R.string.step_details));
             }
@@ -46,30 +47,28 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
     public void switchStep(int recipeID, int stepID) {
         StepFragment stepsListFragment = StepFragment.newInstance(recipeID, stepID);
         fragmentManager.beginTransaction()
-                .replace(R.id.fl_step_fragment_holder, stepsListFragment)
+                .replace(R.id.frag_step, stepsListFragment)
                 .commit();
+
     }
 
     // prev / next step button controller
     @Override
     public void onStepFragmentInteraction(Recipe currentRecipe, int currentStepID, String whichBtn) {
         int nextStepID = -1;
-        Toast noStepsToast = Toast.makeText(this, "No more steps", Toast.LENGTH_SHORT);
         // step ids begin at 0
         int currentRecipeStepsNum = currentRecipe.getSteps().size() - 1;
+        // calc next step ID depending on button click
         if (whichBtn.equals(KEY_PREVIOUS)) {
             if (currentStepID > 0)
                 nextStepID = currentStepID - 1;
-            else
-                noStepsToast.show();
         } else if (whichBtn.equals(KEY_NEXT)) {
             if (currentStepID < currentRecipeStepsNum)
                 nextStepID = currentStepID + 1;
-            else
-                noStepsToast.show();
         }
 
         int currentRecipeID = currentRecipe.getId();
+        // if next step exists, switch step
         if (nextStepID != -1)
             switchStep(currentRecipeID, nextStepID);
     }

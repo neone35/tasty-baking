@@ -16,7 +16,6 @@ import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.ui.step.StepActivity;
 import com.example.aarta.tastybaking.ui.step.StepFragment;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
 
@@ -62,7 +61,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
             // add initial fragment
             DetailListFragment stepsListFragment = DetailListFragment.newInstance(RECIPE_ID, STEPS_MODE);
             fragmentManager.beginTransaction()
-                    .add(R.id.fl_detail_list_holder, stepsListFragment)
+                    .add(R.id.frag_detail_list, stepsListFragment)
                     .commit();
             // set initial mode
             switchFragment(seeIngredients, steps, STEPS_MODE);
@@ -105,7 +104,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
                     // switch to ingredients on click
                     DetailListFragment ingredientListFragment = DetailListFragment.newInstance(RECIPE_ID, INGREDIENTS_MODE);
                     fragmentManager.beginTransaction()
-                            .replace(R.id.fl_detail_list_holder, ingredientListFragment)
+                            .replace(R.id.frag_detail_list, ingredientListFragment)
                             // add it to back stack (set to 1)
                             .addToBackStack(INGREDIENTS_MODE)
                             .commit();
@@ -118,7 +117,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
                     // switch to steps fragment on click
                     DetailListFragment stepsListFragment = DetailListFragment.newInstance(RECIPE_ID, STEPS_MODE);
                     fragmentManager.beginTransaction()
-                            .replace(R.id.fl_detail_list_holder, stepsListFragment)
+                            .replace(R.id.frag_detail_list, stepsListFragment)
                             .commit();
                 });
                 break;
@@ -178,7 +177,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         } else { // tablet layout
             StepFragment stepsListFragment = StepFragment.newInstance(RECIPE_ID, selectedStep.getId());
             fragmentManager.beginTransaction()
-                    .replace(R.id.fl_step_fragment_holder, stepsListFragment)
+                    .replace(R.id.frag_step, stepsListFragment)
                     .commit();
         }
     }
