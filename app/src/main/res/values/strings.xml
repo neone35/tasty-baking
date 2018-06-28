@@ -16,4 +16,5 @@
     <string name="step_details">Step details</string>
     <string name="play_button">play button</string>
     <string name="pause_button">pause button</string>
+    <string name="recipe_video_thumbnail">Recipe video thumbnail</string>
 </resources>

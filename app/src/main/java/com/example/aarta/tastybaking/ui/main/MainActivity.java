@@ -5,10 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.facebook.stetho.Stetho;
+import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.Logger;
 
 public class MainActivity extends AppCompatActivity implements RecipesCardListFragment.onRecipeCardsListFragmentInteractionListener {
@@ -18,9 +21,10 @@ public class MainActivity extends AppCompatActivity implements RecipesCardListFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.addLogAdapter(new AndroidLogAdapter());
+        Stetho.initializeWithDefaults(this);
         setContentView(R.layout.activity_main);
         setupActionBar();
-        Stetho.initializeWithDefaults(this);
     }
 
     public void setupActionBar() {

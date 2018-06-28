@@ -142,7 +142,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
 
     private void hideRecipeDetailImage() {
         // hide recipe image in detail only
-        detailBinding.incRecipeInfo.ivRecipe.setVisibility(View.INVISIBLE);
+        detailBinding.incRecipeInfo.flExoHolder.setVisibility(View.GONE);
     }
 
     private void setOneRecipeInfo(int recipeID) {

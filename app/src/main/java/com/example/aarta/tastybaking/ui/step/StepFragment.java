@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,10 +100,11 @@ public class StepFragment extends Fragment {
                 if (oneStep != null) {
                     // setup exoplayer
                     stepExoPlayer = getPreparedExoPlayer(ctx, oneStep.getVideoURL());
-                    setupExoPlayer(ctx, stepExoPlayer, stepExoPlayerView);
+                    stepExoPlayerView.setPlayer(stepExoPlayer);
+                    setExoListeners(ctx, stepExoPlayer, stepExoPlayerView);
                     stepExoPlayer.setPlayWhenReady(false);
                     stepExoPlayerView.setControllerAutoShow(true);
-
+                    // setup other views
                     tvShortDescr.setText(oneStep.getShortDescription());
                     tvLongDescr.setText(oneStep.getDescription());
 //                    Logger.d(getActivity());
@@ -125,8 +127,7 @@ public class StepFragment extends Fragment {
         return view;
     }
 
-    private void setupExoPlayer(Context ctx, SimpleExoPlayer stepExoPlayer, PlayerView stepExoPlayerView) {
-        stepExoPlayerView.setPlayer(stepExoPlayer);
+    private void setExoListeners(Context ctx, SimpleExoPlayer stepExoPlayer, PlayerView stepExoPlayerView) {
         Player.DefaultEventListener defaultEventListener = new Player.DefaultEventListener() {
             @Override
             public void onPlayerError(ExoPlaybackException error) {
@@ -163,27 +164,24 @@ public class StepFragment extends Fragment {
 
     private SimpleExoPlayer getPreparedExoPlayer(Context ctx, String mp4VideoUriString) {
         Uri mp4VideoUri = Uri.parse(mp4VideoUriString);
-        // 1. Create a default TrackSelector
+        //* 1. Create a default TrackSelector
         // Measures bandwidth during playback. Can be null if not required.
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         // Selects tracks provided by the MediaSource
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector =
-                new DefaultTrackSelector(videoTrackSelectionFactory);
+        TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-        // 2. Prepare the player
+        //* 2. Prepare the player
         // Produces DataSource instances through which media data is loaded.
         DataSource.Factory dataSourceFactory = null;
         if (ctx != null) {
-            dataSourceFactory = new DefaultDataSourceFactory(ctx,
-                    Util.getUserAgent(ctx, ctx.getApplicationInfo().name), bandwidthMeter);
+            String appName = ctx.getApplicationInfo().name;
+            dataSourceFactory = new DefaultDataSourceFactory(ctx, Util.getUserAgent(ctx, appName), bandwidthMeter);
         }
         // This is the MediaSource representing the media to be played.
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(mp4VideoUri);
+        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mp4VideoUri);
 
-        // 3. Create, prepare player, using results from (1) and (2)
+        //1+2. Create, prepare player, using results
         SimpleExoPlayer exoPlayer = ExoPlayerFactory.newSimpleInstance(ctx, trackSelector);
         exoPlayer.prepare(videoSource);
 
