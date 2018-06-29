@@ -33,6 +33,7 @@
         </activity>
 
         <activity
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:name=".ui.step.StepActivity"
             android:label="@string/step_details"
             android:parentActivityName=".ui.detail.DetailActivity"

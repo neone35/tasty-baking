@@ -3,11 +3,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fl_step_frag_mobile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.step.StepFragment">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_step_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,35 +26,49 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_step_short_description"
-            style="@style/TextAppearance.AppCompat.Headline"
+        <ScrollView
+            android:id="@+id/sv_description_holder"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/fl_buttons_holder"
             app:layout_constraintEnd_toEndOf="@+id/exo_step_player"
             app:layout_constraintStart_toStartOf="@+id/exo_step_player"
-            app:layout_constraintTop_toBottomOf="@+id/exo_step_player"
-            tools:text="Starting prep" />
+            app:layout_constraintTop_toBottomOf="@+id/exo_step_player">
 
-        <TextView
-            android:id="@+id/tv_step_description"
-            style="@style/TextAppearance.AppCompat.Medium"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="@+id/exo_step_player"
-            app:layout_constraintStart_toStartOf="@+id/exo_step_player"
-            app:layout_constraintTop_toBottomOf="@+id/tv_step_short_description"
-            tools:text="1. Preheat the oven to 350°F. Butter a 9' deep dish pie pan." />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_step_short_description"
+                    style="@style/TextAppearance.AppCompat.Headline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Starting prep" />
+
+                <TextView
+                    android:id="@+id/tv_step_description"
+                    style="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_step_short_description"
+                    tools:text="1. Preheat the oven to 350°F. Butter a 9' deep dish pie pan." />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </ScrollView>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/fl_buttons_holder"

@@ -78,7 +78,7 @@ public class RecipesCardListFragment extends Fragment {
         RecipesViewModelFactory factory = InjectorUtils.provideMainViewModelFactory(Objects.requireNonNull(this.getContext()));
         // Tie fragment & ViewModel together
         RecipesViewModel mViewModel = ViewModelProviders.of(this, factory).get(RecipesViewModel.class);
-        // Trigger service once per lifetime & observe change in DB calling DAO
+        // Trigger LiveData notification on fragment creation & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
                 Logger.d("Setting card list adapter");

@@ -1,17 +1,23 @@
 package com.example.aarta.tastybaking.ui.step;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +40,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -55,6 +60,7 @@ public class StepFragment extends Fragment {
     private Step oneStep = null;
     private onStepFragmentInteractionListener mListener;
     private SimpleExoPlayer stepExoPlayer;
+    private PlayerView mStepExoPlayerView;
 
     public StepFragment() {
         // Required empty public constructor
@@ -90,7 +96,8 @@ public class StepFragment extends Fragment {
         // Tie fragment & ViewModel together
         OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
-            PlayerView stepExoPlayerView = view.findViewById(R.id.exo_step_player);
+            mStepExoPlayerView = view.findViewById(R.id.exo_step_player);
+            FrameLayout flDescrHolder = view.findViewById(R.id.sv_description_holder);
             TextView tvShortDescr = view.findViewById(R.id.tv_step_short_description);
             TextView tvLongDescr = view.findViewById(R.id.tv_step_description);
             Button btnPreviousStep = view.findViewById(R.id.btn_previous_step);
@@ -100,10 +107,10 @@ public class StepFragment extends Fragment {
                 if (oneStep != null) {
                     // setup exoplayer
                     stepExoPlayer = getPreparedExoPlayer(ctx, oneStep.getVideoURL());
-                    stepExoPlayerView.setPlayer(stepExoPlayer);
-                    setExoListeners(ctx, stepExoPlayer, stepExoPlayerView);
+                    mStepExoPlayerView.setPlayer(stepExoPlayer);
+                    setExoListeners(ctx, stepExoPlayer, flDescrHolder);
                     stepExoPlayer.setPlayWhenReady(false);
-                    stepExoPlayerView.setControllerAutoShow(true);
+                    mStepExoPlayerView.setControllerAutoShow(true);
                     // setup other views
                     tvShortDescr.setText(oneStep.getShortDescription());
                     tvLongDescr.setText(oneStep.getDescription());
@@ -127,16 +134,90 @@ public class StepFragment extends Fragment {
         return view;
     }
 
-    private void setExoListeners(Context ctx, SimpleExoPlayer stepExoPlayer, PlayerView stepExoPlayerView) {
+    private void setExoListeners(Context ctx,
+                                 SimpleExoPlayer stepExoPlayer,
+                                 FrameLayout flDescrHolder) {
         Player.DefaultEventListener defaultEventListener = new Player.DefaultEventListener() {
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 Logger.e(error.toString());
                 Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
-                stepExoPlayerView.setVisibility(View.GONE);
+                int animateSpeed = 500;
+                float invisible = 0.0f;
+                float visible = 1.0f;
+                mStepExoPlayerView.animate()
+                        .alpha(invisible)
+                        .translationY(-mStepExoPlayerView.getHeight())
+                        .setDuration(animateSpeed)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mStepExoPlayerView.setVisibility(View.GONE);
+                                flDescrHolder.animate()
+                                        .alpha(visible)
+                                        .setDuration(animateSpeed)
+                                        .translationY(0);
+                            }
+
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                flDescrHolder.animate()
+                                        .translationY(-20)
+                                        .alpha(invisible)
+                                        .setDuration(animateSpeed);
+                            }
+                        });
             }
         };
         stepExoPlayer.addListener(defaultEventListener);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checking the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // hide action bar
+            Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
+            // hide system UI
+
+            // set exoPlayer to match parent
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
+            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            params.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            params.setMargins(0, 0, 0, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.setMarginEnd(0);
+                params.setMarginStart(0);
+            }
+            mStepExoPlayerView.setLayoutParams(params);
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // show action bar
+            Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
+            // show system UI
+
+            // set exoPlayer dimensions back to initial
+            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
+            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            // find out device type to adjust initial height
+            float dpRatio = mStepExoPlayerView.getContext().getResources().getDisplayMetrics().density;
+            if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_tablet) != null) {
+                int TABLET_PLAYER_HEIGHT_PX = 350;
+                params.height = (int) (TABLET_PLAYER_HEIGHT_PX * dpRatio);
+            } else if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_mobile) != null) {
+                int MOBILE_PLAYER_HEIGHT_PX = 200;
+                params.height = (int) (MOBILE_PLAYER_HEIGHT_PX * dpRatio);
+            }
+            // set margins back to initial
+            int margin8DP = (int) (8 * dpRatio);
+            params.setMargins(margin8DP, margin8DP, margin8DP, margin8DP);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.setMarginEnd(margin8DP);
+                params.setMarginStart(margin8DP);
+            }
+            mStepExoPlayerView.setLayoutParams(params);
+        }
     }
 
     private void controlBtnVisibility(Recipe oneRecipe, View view) {
