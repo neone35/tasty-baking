@@ -11,6 +11,8 @@ import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.detail.DetailListFragment.onDetailListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
+import com.orhanobut.logger.Logger;
+
 
 public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapter.ViewHolder> {
 
@@ -32,15 +34,17 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
 
     @Override
     public void onBindViewHolder(@NonNull StepListItemAdapter.ViewHolder holder, int position) {
-        Step oneStep = mOneRecipe.getSteps().get(position);
-        String stepShortDescription = (position + 1) + ". " + oneStep.getShortDescription();
+        Step oneStepByPos = mOneRecipe.getSteps().get(position);
+        String stepShortDescription = oneStepByPos.getShortDescription();
+        if (position != 0)
+            stepShortDescription = position + ". " + oneStepByPos.getShortDescription();
 
         holder.mStepDetailsBtn.setText(stepShortDescription);
         holder.mStepDetailsBtn.setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
-                mListener.onDetailListFragmentInteraction(mOneRecipe, oneStep);
+                mListener.onDetailListFragmentInteraction(mOneRecipe, oneStepByPos);
             }
         });
     }
@@ -48,6 +52,11 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
     @Override
     public int getItemCount() {
         return mOneRecipe.getSteps().size();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

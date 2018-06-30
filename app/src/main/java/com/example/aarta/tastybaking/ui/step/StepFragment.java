@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
@@ -29,6 +30,7 @@ import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModel;
 import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModelFactory;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
+import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -47,6 +49,8 @@ import com.google.android.exoplayer2.util.Util;
 import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +65,7 @@ public class StepFragment extends Fragment {
     private onStepFragmentInteractionListener mListener;
     private SimpleExoPlayer stepExoPlayer;
     private PlayerView mStepExoPlayerView;
+    private int mCurrentOrientation;
 
     public StepFragment() {
         // Required empty public constructor
@@ -112,12 +117,18 @@ public class StepFragment extends Fragment {
                     stepExoPlayer.setPlayWhenReady(false);
                     mStepExoPlayerView.setControllerAutoShow(true);
                     // setup other views
-                    tvShortDescr.setText(oneStep.getShortDescription());
-                    tvLongDescr.setText(oneStep.getDescription());
-//                    Logger.d(getActivity());
+                    mCurrentOrientation = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation;
+                    if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        setLandscapeConfig();
+                        // other views for possible change to portrait
+                        RecipeUtils.setFormattedDescription(oneStep, tvLongDescr, tvShortDescr);
+                    } else if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                        // only texts on new viewmodel bind
+                        RecipeUtils.setFormattedDescription(oneStep, tvLongDescr, tvShortDescr);
+                    }
                     // enable step switch buttons on mobile only
                     if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
-                        // It's StepActivity (mobile)
+                        // It's StepActivity (mobile, not DetailActivity)
                         // on tablet buttons are GONE, so no need to set up listeners
                         setBtnListeners(btnPreviousStep, btnNextStep, oneRecipe);
                         // hide next / prev button if step doesn't exist
@@ -145,6 +156,7 @@ public class StepFragment extends Fragment {
                 int animateSpeed = 500;
                 float invisible = 0.0f;
                 float visible = 1.0f;
+                // animate video fadeout together with step description
                 mStepExoPlayerView.animate()
                         .alpha(invisible)
                         .translationY(-mStepExoPlayerView.getHeight())
@@ -168,20 +180,20 @@ public class StepFragment extends Fragment {
                                         .setDuration(animateSpeed);
                             }
                         });
+                // if error occurred in landscape, change to portrait config for correct animations
+                if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    setPortraitConfig();
+                }
             }
         };
         stepExoPlayer.addListener(defaultEventListener);
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checking the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+    private void setLandscapeConfig() {
+        // change UI only if player is attached
+        if (mStepExoPlayerView.getPlayer().getPlaybackError() == null) {
             // hide action bar
             Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
-            // hide system UI
-
             // set exoPlayer to match parent
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
             params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
@@ -192,31 +204,42 @@ public class StepFragment extends Fragment {
                 params.setMarginStart(0);
             }
             mStepExoPlayerView.setLayoutParams(params);
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // show action bar
-            Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
-            // show system UI
+        }
+    }
 
-            // set exoPlayer dimensions back to initial
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
-            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-            // find out device type to adjust initial height
-            float dpRatio = mStepExoPlayerView.getContext().getResources().getDisplayMetrics().density;
-            if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_tablet) != null) {
-                int TABLET_PLAYER_HEIGHT_PX = 350;
-                params.height = (int) (TABLET_PLAYER_HEIGHT_PX * dpRatio);
-            } else if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_mobile) != null) {
-                int MOBILE_PLAYER_HEIGHT_PX = 200;
-                params.height = (int) (MOBILE_PLAYER_HEIGHT_PX * dpRatio);
-            }
-            // set margins back to initial
-            int margin8DP = (int) (8 * dpRatio);
-            params.setMargins(margin8DP, margin8DP, margin8DP, margin8DP);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                params.setMarginEnd(margin8DP);
-                params.setMarginStart(margin8DP);
-            }
-            mStepExoPlayerView.setLayoutParams(params);
+    private void setPortraitConfig() {
+        // show action bar
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
+        // set exoPlayer dimensions back to initial
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
+        params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        // find out device type to adjust initial height
+        float dpRatio = mStepExoPlayerView.getContext().getResources().getDisplayMetrics().density;
+        if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_tablet) != null) {
+            int TABLET_PLAYER_HEIGHT_PX = 350;
+            params.height = (int) (TABLET_PLAYER_HEIGHT_PX * dpRatio);
+        } else if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_mobile) != null) {
+            int MOBILE_PLAYER_HEIGHT_PX = 200;
+            params.height = (int) (MOBILE_PLAYER_HEIGHT_PX * dpRatio);
+        }
+        // set margins back to initial
+        int margin8DP = (int) (8 * dpRatio);
+        params.setMargins(margin8DP, margin8DP, margin8DP, margin8DP);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginEnd(margin8DP);
+            params.setMarginStart(margin8DP);
+        }
+        mStepExoPlayerView.setLayoutParams(params);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checking the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setLandscapeConfig();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setPortraitConfig();
         }
     }
 

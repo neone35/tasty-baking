@@ -12,6 +12,7 @@ import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.databinding.ActivityStepBinding;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
+import com.orhanobut.logger.Logger;
 
 // used on mobile only
 public class StepActivity extends AppCompatActivity implements StepFragment.onStepFragmentInteractionListener {
@@ -66,6 +67,8 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
             if (currentStepID < currentRecipeStepsNum)
                 nextStepID = currentStepID + 1;
         }
+
+        Logger.d(nextStepID);
 
         int currentRecipeID = currentRecipe.getId();
         // if next step exists, switch step
