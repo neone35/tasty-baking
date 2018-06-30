@@ -1,5 +1,6 @@
 package com.example.aarta.tastybaking.ui.detail;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
 
     private final Recipe mOneRecipe;
     private final onDetailListFragmentInteractionListener mListener;
+    private int selectedPos = -1;
 
     StepListItemAdapter(Recipe recipe, onDetailListFragmentInteractionListener listener) {
         mOneRecipe = recipe;
@@ -33,15 +35,21 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StepListItemAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StepListItemAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Step oneStepByPos = mOneRecipe.getSteps().get(position);
         String stepShortDescription = oneStepByPos.getShortDescription();
         if (position != 0)
             stepShortDescription = position + ". " + oneStepByPos.getShortDescription();
 
+        holder.mStepDetailsBtn.setSelected(selectedPos == position);
         holder.mStepDetailsBtn.setText(stepShortDescription);
         holder.mStepDetailsBtn.setOnClickListener(v -> {
             if (null != mListener) {
+                notifyItemChanged(selectedPos);
+                selectedPos = position;
+                notifyItemChanged(selectedPos);
+                // change color to darker when visited
+                v.setSelected(true);
                 // Notify the active callbacks interface (the activity, if the
                 // fragment is attached to one) that an item has been selected.
                 mListener.onDetailListFragmentInteraction(mOneRecipe, oneStepByPos);
@@ -52,11 +60,6 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
     @Override
     public int getItemCount() {
         return mOneRecipe.getSteps().size();
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

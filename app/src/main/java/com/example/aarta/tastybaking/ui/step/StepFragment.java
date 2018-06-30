@@ -119,7 +119,10 @@ public class StepFragment extends Fragment {
                     // setup other views
                     mCurrentOrientation = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation;
                     if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        setLandscapeConfig();
+                        // change to full screen only on mobile
+                        if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
+                            setLandscapeConfig();
+                        }
                         // other views for possible change to portrait
                         RecipeUtils.setFormattedDescription(oneStep, tvLongDescr, tvShortDescr);
                     } else if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
