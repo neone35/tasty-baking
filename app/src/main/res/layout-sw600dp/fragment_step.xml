@@ -14,6 +14,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.exoplayer2.ui.PlayerView
+            android:visibility="gone"
             android:id="@+id/exo_step_player"
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -45,15 +46,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <ProgressBar
+                    android:id="@+id/pb_cpd_holder"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_step_short_description" />
+
                 <TextView
                     android:id="@+id/tv_step_short_description"
                     style="@style/TextAppearance.AppCompat.Headline"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/pb_cpd_holder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Starting prep" />
+                    tools:text="Starting prep looooooooooooong" />
 
                 <TextView
                     android:id="@+id/tv_step_description"

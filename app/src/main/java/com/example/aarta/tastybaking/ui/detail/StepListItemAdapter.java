@@ -41,13 +41,15 @@ public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapte
         if (position != 0)
             stepShortDescription = position + ". " + oneStepByPos.getShortDescription();
 
-        holder.mStepDetailsBtn.setSelected(selectedPos == position);
         holder.mStepDetailsBtn.setText(stepShortDescription);
+        // remove selection if last selected position is not current position
+        // add selection if selected position has same position
+        holder.mStepDetailsBtn.setSelected(selectedPos == position);
         holder.mStepDetailsBtn.setOnClickListener(v -> {
             if (null != mListener) {
-                notifyItemChanged(selectedPos);
-                selectedPos = position;
-                notifyItemChanged(selectedPos);
+                notifyItemChanged(selectedPos); // remove selection from last item (call bind again)
+                selectedPos = position; // set current position
+                notifyItemChanged(selectedPos); // add selection to current item (calls bind again)
                 // change color to darker when visited
                 v.setSelected(true);
                 // Notify the active callbacks interface (the activity, if the

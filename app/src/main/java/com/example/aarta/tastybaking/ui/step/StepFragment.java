@@ -13,12 +13,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,7 @@ import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -151,39 +155,55 @@ public class StepFragment extends Fragment {
     private void setExoListeners(Context ctx,
                                  SimpleExoPlayer stepExoPlayer,
                                  FrameLayout flDescrHolder) {
+
+        // show loading indicator
+        ProgressBar pbProgressDrawableView = Objects.requireNonNull(getActivity()).findViewById(R.id.pb_cpd_holder);
+        pbProgressDrawableView.setVisibility(View.VISIBLE);
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 10f, 25f);
+        pbProgressDrawableView.setIndeterminateDrawable(circularProgressDrawable);
+
         Player.DefaultEventListener defaultEventListener = new Player.DefaultEventListener() {
+            int animateSpeed = 500;
+            float invisible = 0.0f;
+            float visible = 1.0f;
+
+            // loading successful, animate in
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                super.onPlayerStateChanged(playWhenReady, playbackState);
+                int maxGonePlayerHeight = 350;
+                switch (playbackState) {
+                    case Player.STATE_READY:
+                        // hide loading indicator
+                        pbProgressDrawableView.setVisibility(View.GONE);
+                        // animate video fade-in
+                        mStepExoPlayerView.animate()
+                                .alpha(invisible)
+                                .translationY(-maxGonePlayerHeight)
+                                .setDuration(animateSpeed)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mStepExoPlayerView.setVisibility(View.VISIBLE);
+                                        mStepExoPlayerView.animate()
+                                                .alpha(visible)
+                                                .translationY(0);
+                                    }
+                                });
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 Logger.e(error.toString());
                 Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
-                int animateSpeed = 500;
-                float invisible = 0.0f;
-                float visible = 1.0f;
-                // animate video fadeout together with step description
-                mStepExoPlayerView.animate()
-                        .alpha(invisible)
-                        .translationY(-mStepExoPlayerView.getHeight())
-                        .setDuration(animateSpeed)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                mStepExoPlayerView.setVisibility(View.GONE);
-                                flDescrHolder.animate()
-                                        .alpha(visible)
-                                        .setDuration(animateSpeed)
-                                        .translationY(0);
-                            }
-
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                super.onAnimationStart(animation);
-                                flDescrHolder.animate()
-                                        .translationY(-20)
-                                        .alpha(invisible)
-                                        .setDuration(animateSpeed);
-                            }
-                        });
-                // if error occurred in landscape, change to portrait config for correct animations
+                // hide loading indicator
+                pbProgressDrawableView.setVisibility(View.GONE);
+                // if error occurred in landscape, change to portrait config to load description
                 if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                     setPortraitConfig();
                 }

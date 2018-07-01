@@ -23,6 +23,7 @@ import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.main.RecipesCardListFragment.onRecipeCardsListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
+import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -124,13 +125,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
     }
 
     private void loadVideoThumbnail(Context ctx, String videoURL, ViewHolder holder) {
-        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(ctx);
-        circularProgressDrawable.setStrokeWidth(15f);
-        circularProgressDrawable.setCenterRadius(80f);
-        int secondaryColor = ctx.getResources().getColor(R.color.colorSecondary);
-        int primaryDarkColor = ctx.getResources().getColor(R.color.colorPrimaryDark);
-        circularProgressDrawable.setColorSchemeColors(secondaryColor, primaryDarkColor);
-        circularProgressDrawable.start();
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
         GlideApp.with(ctx)
                 .load(videoURL)
                 .placeholder(circularProgressDrawable)

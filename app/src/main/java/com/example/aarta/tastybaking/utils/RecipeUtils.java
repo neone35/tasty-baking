@@ -1,8 +1,11 @@
 package com.example.aarta.tastybaking.utils;
 
+import android.content.Context;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Ingredient;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
@@ -65,5 +68,16 @@ public final class RecipeUtils {
             }
         }
         return true;
+    }
+
+    public static CircularProgressDrawable getCircleProgressDrawable(Context ctx, float strokeWidth, float centerRadius) {
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(ctx);
+        circularProgressDrawable.setStrokeWidth(strokeWidth);
+        circularProgressDrawable.setCenterRadius(centerRadius);
+        int secondaryColor = ctx.getResources().getColor(R.color.colorSecondary);
+        int primaryDarkColor = ctx.getResources().getColor(R.color.colorPrimaryDark);
+        circularProgressDrawable.setColorSchemeColors(secondaryColor, primaryDarkColor);
+        circularProgressDrawable.start();
+        return circularProgressDrawable;
     }
 }
