@@ -12,7 +12,6 @@ import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.detail.DetailListFragment.onDetailListFragmentInteractionListener;
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.orhanobut.logger.Logger;
 
 
 public class StepListItemAdapter extends RecyclerView.Adapter<StepListItemAdapter.ViewHolder> {

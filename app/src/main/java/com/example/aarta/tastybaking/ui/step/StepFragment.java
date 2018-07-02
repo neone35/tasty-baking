@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
@@ -20,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +33,6 @@ import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -50,11 +47,10 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,6 +66,7 @@ public class StepFragment extends Fragment {
     private SimpleExoPlayer stepExoPlayer;
     private PlayerView mStepExoPlayerView;
     private int mCurrentOrientation;
+    private ProgressBar mPbProgressDrawableView;
 
     public StepFragment() {
         // Required empty public constructor
@@ -99,6 +96,11 @@ public class StepFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_step, container, false);
         Context ctx = this.getContext();
+
+        // show loading indicator
+        mPbProgressDrawableView = view.findViewById(R.id.pb_cpd_holder);
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(this.getContext(), 10f, 25f);
+        mPbProgressDrawableView.setIndeterminateDrawable(circularProgressDrawable);
 
         // Get repository instance
         OneRecipeViewModelFactory factory = InjectorUtils.provideDetailViewModelFactory(Objects.requireNonNull(ctx), mRecipeID);
@@ -156,12 +158,6 @@ public class StepFragment extends Fragment {
                                  SimpleExoPlayer stepExoPlayer,
                                  FrameLayout flDescrHolder) {
 
-        // show loading indicator
-        ProgressBar pbProgressDrawableView = Objects.requireNonNull(getActivity()).findViewById(R.id.pb_cpd_holder);
-        pbProgressDrawableView.setVisibility(View.VISIBLE);
-        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 10f, 25f);
-        pbProgressDrawableView.setIndeterminateDrawable(circularProgressDrawable);
-
         Player.DefaultEventListener defaultEventListener = new Player.DefaultEventListener() {
             int animateSpeed = 500;
             float invisible = 0.0f;
@@ -174,8 +170,6 @@ public class StepFragment extends Fragment {
                 int maxGonePlayerHeight = 350;
                 switch (playbackState) {
                     case Player.STATE_READY:
-                        // hide loading indicator
-                        pbProgressDrawableView.setVisibility(View.GONE);
                         // animate video fade-in
                         mStepExoPlayerView.animate()
                                 .alpha(invisible)
@@ -189,6 +183,8 @@ public class StepFragment extends Fragment {
                                         mStepExoPlayerView.animate()
                                                 .alpha(visible)
                                                 .translationY(0);
+                                        // hide loading indicator
+                                        mPbProgressDrawableView.setVisibility(View.GONE);
                                     }
                                 });
                         break;
@@ -197,12 +193,13 @@ public class StepFragment extends Fragment {
                 }
             }
 
+            // error, hide loading and leave player as GONE
             @Override
             public void onPlayerError(ExoPlaybackException error) {
-                Logger.e(error.toString());
+                Timber.e(error.toString());
                 Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
                 // hide loading indicator
-                pbProgressDrawableView.setVisibility(View.GONE);
+                mPbProgressDrawableView.setVisibility(View.GONE);
                 // if error occurred in landscape, change to portrait config to load description
                 if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                     setPortraitConfig();

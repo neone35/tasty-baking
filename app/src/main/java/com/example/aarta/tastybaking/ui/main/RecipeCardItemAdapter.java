@@ -1,5 +1,6 @@
 package com.example.aarta.tastybaking.ui.main;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -53,10 +54,12 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
     private Context mContext;
     private SimpleExoPlayer mStepExoPlayer;
     private boolean EXO_RELEASED = true;
+    private int mIngredientWidgetID;
 
-    RecipeCardItemAdapter(List<Recipe> recipes, onRecipeCardsListFragmentInteractionListener listener) {
+    RecipeCardItemAdapter(List<Recipe> recipes, onRecipeCardsListFragmentInteractionListener listener, int ingredientWidgetID) {
         mRecipeList = recipes;
         mListener = listener;
+        mIngredientWidgetID = ingredientWidgetID;
     }
 
     @NonNull
@@ -81,26 +84,31 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         String lastNotEmptyVideoURL = getLastVideoURL(position);
         // load thumbnail into imageView with Glide
         loadVideoThumbnail(mContext, lastNotEmptyVideoURL, holder);
-        // create exoplayer
-        mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);
-        // listen for exoPlayer thumbnail play button click
-        holder.mPlayIconButton.setOnClickListener(v -> {
-            // release if new thumbnail clicked without recyclerview scroll before
-            if (!EXO_RELEASED) {
-                mStepExoPlayer.release();
-                mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);
-            }
-            holder.mStepExoPlayerView.setControllerAutoShow(true);
-            // tie view & player together
-            holder.mStepExoPlayerView.setPlayer(mStepExoPlayer);
-            // initialize player with viewHolder mediasource
-            mStepExoPlayer.prepare(holder.mMediaSource);
-            // play instantly after click
-            mStepExoPlayer.setPlayWhenReady(true);
-            // provide key for recyclerView to release exoPlayer on scroll
-            EXO_RELEASED = false;
-            switchToExoPlayerView(holder);
-        });
+
+        // check if adapter is attached outside widget config
+        // enable exo player & play button listener only when launched normally (not as widget config)
+        if (mIngredientWidgetID != AppWidgetManager.INVALID_APPWIDGET_ID && mIngredientWidgetID != -1) {
+            // create exoplayer
+            mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);
+            // listen for exoPlayer thumbnail play button click
+            holder.mPlayIconButton.setOnClickListener(v -> {
+                // release if new thumbnail clicked without recyclerview scroll before
+                if (!EXO_RELEASED) {
+                    mStepExoPlayer.release();
+                    mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);
+                }
+                holder.mStepExoPlayerView.setControllerAutoShow(true);
+                // tie view & player together
+                holder.mStepExoPlayerView.setPlayer(mStepExoPlayer);
+                // initialize player with viewHolder mediasource
+                mStepExoPlayer.prepare(holder.mMediaSource);
+                // play instantly after click
+                mStepExoPlayer.setPlayWhenReady(true);
+                // provide key for recyclerView to release exoPlayer on scroll
+                EXO_RELEASED = false;
+                switchToExoPlayerView(holder);
+            });
+        }
 
         // setup other views
         holder.mRecipeNameView.setText(recipeName);
@@ -108,7 +116,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         holder.mStepsNumView.setText(stepsNum);
         holder.mServingsNumView.setText(servingsNum);
 
-        // listen for card click
+        // listen for card click to launch detail activity
         holder.mView.setOnClickListener(v -> {
             if (null != mListener) {
                 // Notify the active callbacks interface (the activity, if the

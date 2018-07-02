@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 40dp = 1 cell, +70dp +1 cell -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:configure="com.example.aarta.tastybaking.ui.main.MainActivity"
+    android:initialLayout="@layout/ingredient_widget_layout"
+    android:minHeight="250dp"
+    android:minResizeHeight="110dp"
+    android:minResizeWidth="180dp"
+    android:minWidth="180dp"
+    android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000">
+
+</appwidget-provider>

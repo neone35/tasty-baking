@@ -8,9 +8,10 @@ import android.content.Intent;
 
 import com.example.aarta.tastybaking.AppExecutors;
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 public class RecipesNetworkRoot {
 
@@ -32,13 +33,13 @@ public class RecipesNetworkRoot {
 
     // Get singleton for this class
     public static RecipesNetworkRoot getInstance(Context context, AppExecutors executors) {
-//        Logger.d("Getting the network data source");
+//        Timber.d("Getting the network data source");
         // Only one instance of this class can be created
         if (sInstance == null) {
             // and only one thread can access this method at a time for data consistency
             synchronized (LOCK) {
                 sInstance = new RecipesNetworkRoot(context.getApplicationContext(), executors);
-                Logger.d("Made new network data source");
+                Timber.d("Made new network data source");
             }
         }
         return sInstance;
@@ -52,24 +53,24 @@ public class RecipesNetworkRoot {
     public void startRecipeFetchService() {
         Intent intentToFetch = new Intent(mContext, RecipeSyncService.class);
         mContext.startService(intentToFetch);
-        Logger.d("Service created");
+        Timber.d("Service created");
     }
 
     public void fetchRecipes() {
-        Logger.d("Recipe fetch started");
+        Timber.d("Recipe fetch started");
         mExecutors.networkIO().execute(() -> {
             try {
                 List<Recipe> recipes = NetworkUtils.getResponseWithUrl(NetworkUtils.RECIPES_URL, NetworkUtils.RECIPES_JSON_NAME);
 
                 // notify observers of MutableLiveData (repository) if fetch is successful
                 if (recipes != null && recipes.size() != 0) {
-                    Logger.d("JSON not null and has " + recipes.size() + " values");
-                    Logger.d("First value is " + recipes.get(0).getName());
+                    Timber.d("JSON not null and has " + recipes.size() + " values");
+                    Timber.d("First value is %s", recipes.get(0).getName());
                     // update LiveData off main thread -> to main thread (postValue)
                     mDownloadedRecipes.postValue(recipes);
                 }
             } catch (Exception e) {
-                Logger.e("Exception" + e);
+                Timber.e(e);
             }
         });
     }

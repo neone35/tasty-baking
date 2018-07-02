@@ -2,14 +2,11 @@ package com.example.aarta.tastybaking.utils;
 
 import android.content.Context;
 import android.support.v4.widget.CircularProgressDrawable;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.example.aarta.tastybaking.R;
-import com.example.aarta.tastybaking.data.models.Ingredient;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
-import com.orhanobut.logger.Logger;
 
 import java.util.List;
 

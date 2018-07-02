@@ -93,7 +93,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     }
 
     public void switchFragment(String buttonText, String actionBarTitle, String mode) {
-//        Logger.d(mode);
+//        Timber.d(mode);
         // change UI
         Objects.requireNonNull(getSupportActionBar()).setTitle(actionBarTitle);
         detailBinding.btnIngredients.setText(buttonText);
@@ -125,11 +125,11 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
     }
 
     private void backStackNumListener() {
-//        Logger.d(backStackNum);
+//        Timber.d(backStackNum);
         // listen for backStack change
         fragmentManager.addOnBackStackChangedListener(() -> {
             backStackNum = fragmentManager.getBackStackEntryCount();
-//            Logger.d(backStackNum);
+//            Timber.d(backStackNum);
             if (backStackNum == 0) {
                 // steps has been clicked
                 switchFragment(seeIngredients, steps, STEPS_MODE);

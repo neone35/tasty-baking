@@ -1,18 +1,17 @@
 package com.example.aarta.tastybaking.ui.step;
 
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.databinding.ActivityStepBinding;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
-import com.orhanobut.logger.Logger;
+
+import timber.log.Timber;
 
 // used on mobile only
 public class StepActivity extends AppCompatActivity implements StepFragment.onStepFragmentInteractionListener {
@@ -68,7 +67,7 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
                 nextStepID = currentStepID + 1;
         }
 
-        Logger.d(nextStepID);
+        Timber.d("Next step ID%s", nextStepID);
 
         int currentRecipeID = currentRecipe.getId();
         // if next step exists, switch step

@@ -1,5 +1,6 @@
 package com.example.aarta.tastybaking.ui.main;
 
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -7,20 +8,21 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
-import com.orhanobut.logger.Logger;
 
 import java.util.Objects;
+
+import timber.log.Timber;
 
 /**
  * A fragment representing a list of Items.
@@ -33,12 +35,14 @@ public class RecipesCardListFragment extends Fragment {
     private onRecipeCardsListFragmentInteractionListener mListener;
     private Parcelable recyclerViewState;
     private RecyclerView mRecyclerView;
+    private int mIngredientWidgetID;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public RecipesCardListFragment() {
+        mIngredientWidgetID = -1;
     }
 
     // storing and restoring recyclerview scroll position
@@ -81,8 +85,9 @@ public class RecipesCardListFragment extends Fragment {
         // Trigger LiveData notification on fragment creation & observe change in DB calling DAO
         mViewModel.getRecipes().observe(this, recipes -> {
             if (view instanceof RecyclerView) {
-                Logger.d("Setting card list adapter");
-                mRecyclerView.setAdapter(new RecipeCardItemAdapter(recipes, mListener));
+                Timber.d("Setting card list adapter");
+                // send out recipes, click listener and widget ID (if launched as config activity)
+                mRecyclerView.setAdapter(new RecipeCardItemAdapter(recipes, mListener, mIngredientWidgetID));
             }
         });
 
@@ -93,6 +98,26 @@ public class RecipesCardListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        // check if fragment attached while activity launched as widget config
+        Bundle extras;
+        if (getActivity() != null) {
+            extras = getActivity().getIntent().getExtras();
+            if (extras != null) {
+                // set widget id which launched main activity
+                mIngredientWidgetID = extras.getInt(
+                        AppWidgetManager.EXTRA_APPWIDGET_ID,
+                        AppWidgetManager.INVALID_APPWIDGET_ID);
+                // set main activity title to select recipe for widget
+                if (mIngredientWidgetID != AppWidgetManager.INVALID_APPWIDGET_ID && mIngredientWidgetID != -1) {
+                    if (getActivity().getActionBar() != null) {
+                        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Select a recipe");
+                    }
+                }
+            }
+        }
+
+        // attach listener to this fragment
         if (context instanceof onRecipeCardsListFragmentInteractionListener) {
             mListener = (onRecipeCardsListFragmentInteractionListener) context;
         } else {
@@ -117,6 +142,7 @@ public class RecipesCardListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+    // forward listener from adapter into main activity
     public interface onRecipeCardsListFragmentInteractionListener {
         void onCardListFragmentInteraction(Recipe recipe);
     }

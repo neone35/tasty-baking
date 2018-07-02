@@ -18,4 +18,5 @@
     <string name="pause_button">pause button</string>
     <string name="recipe_video_thumbnail">Recipe video thumbnail</string>
     <string name="loading_indicator">Loading indicator</string>
+    <string name="appwidget_prefix_default">prefix_</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.example.aarta.tastybaking.data.network;
 
 import com.example.aarta.tastybaking.data.models.Recipe;
-import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
 
 public class NetworkUtils {
 
@@ -23,7 +23,7 @@ public class NetworkUtils {
         try {
             recipeList = retroCall.execute().body();
         } catch (IOException e) {
-            Logger.e("Exception" + e);
+            Timber.e(e);
         }
         return recipeList;
     }

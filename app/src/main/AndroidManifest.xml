@@ -13,19 +13,16 @@
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
-        <service android:name=".data.network.RecipeSyncService" />
 
         <activity
             android:name=".ui.detail.DetailActivity"
             android:label="@string/steps"
             android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -38,12 +35,31 @@
             android:label="@string/step_details"
             android:parentActivityName=".ui.detail.DetailActivity"
             android:theme="@style/AppTheme">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.detail.DetailActivity" />
         </activity>
+
+        <service android:name=".data.network.RecipeSyncService" />
+
+        <!-- receive system broadcasts for this widget update -->
+        <!-- has 5s restriction, long running tasks should be in service -->
+        <receiver
+            android:name=".widgets.IngredientsWidgetProvider"
+            android:icon="@mipmap/ic_launcher"
+            android:label="Tasty ingredients">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredient_widget_info" />
+        </receiver>
+        <!-- adapter for widget listview -->
+        <service
+            android:name=".widgets.IngredientListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>
 

@@ -1,16 +1,16 @@
 package com.example.aarta.tastybaking.data;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 
 import com.example.aarta.tastybaking.AppExecutors;
-import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.example.aarta.tastybaking.data.database.RecipeDao;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.network.RecipesNetworkRoot;
-import com.orhanobut.logger.Logger;
+import com.example.aarta.tastybaking.utils.RecipeUtils;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 public class TastyRepository {
 
@@ -37,7 +37,7 @@ public class TastyRepository {
             // Triggered only if database is filled
 //            if (mRecipeDao.getAll() != null) {
 //                mRecipeDao.deleteAllRecipes();
-//                Logger.d("Old recipes deleted");
+//                Timber.d("Old recipes deleted");
 //            }
 
             // Insert new recipes into recipeDB (DAO LiveData observers get notified)
@@ -47,9 +47,9 @@ public class TastyRepository {
                 recipeArray = RecipeUtils.getRecipeArray(newRecipesFromNetwork);
                 // DB changes are detected by LiveData DB monitor (getCurrentRecipes)
                 mRecipeDao.bulkInsert(recipeArray);
-                Logger.d("New values inserted");
+                Timber.d("New values inserted");
             } else {
-                Logger.d("No response from network");
+                Timber.d("No response from network");
             }
         }));
     }
@@ -57,12 +57,12 @@ public class TastyRepository {
     public synchronized static TastyRepository getInstance(
             RecipeDao recipeDao, RecipesNetworkRoot recipesNetworkRoot,
             AppExecutors executors) {
-//        Logger.d("Getting the repository");
+//        Timber.d("Getting the repository");
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = new TastyRepository(recipeDao, recipesNetworkRoot,
                         executors);
-                Logger.d("Made new repository");
+                Timber.d("Made new repository");
             }
         }
         return sInstance;
@@ -70,7 +70,7 @@ public class TastyRepository {
 
     // called from MainFragViewModel
     public LiveData<List<Recipe>> getCurrentRecipes() {
-//        Logger.d("Getting all recipes");
+//        Timber.d("Getting all recipes");
         // start fetch in service (once)
         initializeData();
         // get recipe list from DB
@@ -78,7 +78,7 @@ public class TastyRepository {
     }
 
     public LiveData<Recipe> getRecipeById(int id) {
-//        Logger.d("Getting one recipe");
+//        Timber.d("Getting one recipe");
         initializeData();
         return mRecipeDao.getById(id);
     }

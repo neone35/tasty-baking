@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.example.aarta.tastybaking.utils.InjectorUtils;
-import com.orhanobut.logger.Logger;
+
+import timber.log.Timber;
 
 public class RecipeSyncService extends IntentService {
 
@@ -17,7 +18,7 @@ public class RecipeSyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        Logger.d("Intent service started");
+        Timber.d("Intent service started");
         RecipesNetworkRoot recipesNetworkRoot = InjectorUtils.provideNetworkDataSource(this.getApplicationContext());
         recipesNetworkRoot.fetchRecipes();
     }
