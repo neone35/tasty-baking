@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,14 +34,14 @@ public class RecipesCardListFragment extends Fragment {
     private onRecipeCardsListFragmentInteractionListener mListener;
     private Parcelable recyclerViewState;
     private RecyclerView mRecyclerView;
-    private int mIngredientWidgetID;
+    private int mIngredientWidgetID = -1;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public RecipesCardListFragment() {
-        mIngredientWidgetID = -1;
+
     }
 
     // storing and restoring recyclerview scroll position
@@ -100,21 +99,11 @@ public class RecipesCardListFragment extends Fragment {
         super.onAttach(context);
 
         // check if fragment attached while activity launched as widget config
-        Bundle extras;
         if (getActivity() != null) {
-            extras = getActivity().getIntent().getExtras();
-            if (extras != null) {
-                // set widget id which launched main activity
-                mIngredientWidgetID = extras.getInt(
-                        AppWidgetManager.EXTRA_APPWIDGET_ID,
-                        AppWidgetManager.INVALID_APPWIDGET_ID);
-                // set main activity title to select recipe for widget
-                if (mIngredientWidgetID != AppWidgetManager.INVALID_APPWIDGET_ID && mIngredientWidgetID != -1) {
-                    if (getActivity().getActionBar() != null) {
-                        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).setTitle("Select a recipe");
-                    }
-                }
-            }
+            // set widget id which launched main activity
+            mIngredientWidgetID = getActivity().getIntent().getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
         // attach listener to this fragment

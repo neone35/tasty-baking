@@ -1,6 +1,7 @@
 package com.example.aarta.tastybaking.utils;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.widget.TextView;
 
@@ -71,8 +72,8 @@ public final class RecipeUtils {
         CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(ctx);
         circularProgressDrawable.setStrokeWidth(strokeWidth);
         circularProgressDrawable.setCenterRadius(centerRadius);
-        int secondaryColor = ctx.getResources().getColor(R.color.colorSecondary);
-        int primaryDarkColor = ctx.getResources().getColor(R.color.colorPrimaryDark);
+        int secondaryColor = ContextCompat.getColor(ctx, R.color.colorSecondary);
+        int primaryDarkColor = ContextCompat.getColor(ctx, R.color.colorPrimaryDark);
         circularProgressDrawable.setColorSchemeColors(secondaryColor, primaryDarkColor);
         circularProgressDrawable.start();
         return circularProgressDrawable;

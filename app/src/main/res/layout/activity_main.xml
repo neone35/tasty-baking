@@ -2,7 +2,7 @@
 
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frag_cards_list"
+    android:id="@+id/cards_list_holder"
     android:name="com.example.aarta.tastybaking.ui.main.RecipesCardListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

@@ -21,9 +21,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.aarta.tastybaking.GlideApp;
 import com.example.aarta.tastybaking.R;
+import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
 import com.example.aarta.tastybaking.ui.main.RecipesCardListFragment.onRecipeCardsListFragmentInteractionListener;
-import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -38,7 +38,6 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +86,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
 
         // check if adapter is attached outside widget config
         // enable exo player & play button listener only when launched normally (not as widget config)
-        if (mIngredientWidgetID != AppWidgetManager.INVALID_APPWIDGET_ID && mIngredientWidgetID != -1) {
+        if (mIngredientWidgetID == AppWidgetManager.INVALID_APPWIDGET_ID || mIngredientWidgetID == -1) {
             // create exoplayer
             mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);
             // listen for exoPlayer thumbnail play button click

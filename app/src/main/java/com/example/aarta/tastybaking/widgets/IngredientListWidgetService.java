@@ -2,7 +2,6 @@ package com.example.aarta.tastybaking.widgets;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -11,11 +10,10 @@ import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.database.RecipeDao;
 import com.example.aarta.tastybaking.data.database.RecipeDatabase;
 import com.example.aarta.tastybaking.data.models.Ingredient;
+import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.List;
 
 import timber.log.Timber;
@@ -37,7 +35,6 @@ class IngredientListRemoteViewsFactory implements RemoteViewsService.RemoteViews
     private Context mContext;
     private List<Ingredient> mIngredientList;
     private int mRecipeID;
-    private RecipeDatabase mRecipeDB;
 
     IngredientListRemoteViewsFactory(Context appCtx, int recipeID) {
         mContext = appCtx;
@@ -45,15 +42,11 @@ class IngredientListRemoteViewsFactory implements RemoteViewsService.RemoteViews
     }
 
     private void getIngredientsFromDB(int recipeID) {
-        mRecipeDB = RecipeDatabase.getInstance(mContext);
+        RecipeDatabase mRecipeDB = RecipeDatabase.getInstance(mContext);
         Timber.d("Getting ingredients with RecipeID %s", recipeID);
         RecipeDao recipeDao = mRecipeDB.recipeDao();
-        Cursor oneRecipeCursor = recipeDao.getStaticRecipeCursor(recipeID);
-        oneRecipeCursor.moveToFirst();
-        String ingredientsJSON = oneRecipeCursor.getString(oneRecipeCursor.getColumnIndex("ingredients"));
-        Type listType = new TypeToken<List<Ingredient>>() {
-        }.getType();
-        mIngredientList = gson.fromJson(ingredientsJSON, listType);
+        Recipe oneRecipe = recipeDao.getStaticRecipe(recipeID);
+        mIngredientList = oneRecipe.getIngredients();
         Timber.d("First ingredient is %s", mIngredientList.get(0).getIngredient());
     }
 

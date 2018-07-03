@@ -3,23 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_ingredients_widget"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_ingredient_widget_title_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:orientation="horizontal"
-        android:paddingTop="4dp">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/tv_ingredient_widget_recipe_title"
-            style="@style/detailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFF"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/colorSecondaryDark"
+            android:textSize="20sp"
             tools:text="Nutella Pie" />
 
         <TextView
@@ -31,7 +34,7 @@
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:text="@string/ingredients"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
 
     </LinearLayout>
@@ -41,9 +44,24 @@
         style="@style/ingredientItem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1"
         android:background="#FFF">
 
     </ListView>
+
+    <TextView
+        android:id="@+id/tv_ingredient_widget_app_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="0"
+        android:gravity="bottom|end"
+        android:text="@string/by_app_name"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp" />
+
 
 </LinearLayout>

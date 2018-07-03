@@ -18,8 +18,8 @@ public class OneRecipeViewModelFactory extends ViewModelProvider.NewInstanceFact
 
     @NonNull
     @Override
+    @SuppressWarnings(value = "unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        //noinspection unchecked
         return (T) new OneRecipeViewModel(mRepository, mRecipeID);
     }
 

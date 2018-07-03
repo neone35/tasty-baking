@@ -49,9 +49,8 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
         seeSteps = "see " + getResources().getString(R.string.steps);
 
         // check if intent bundle received successfully
-        Bundle mainExtrasBundle = getIntent().getExtras();
-        if (mainExtrasBundle != null) {
-            RECIPE_ID = mainExtrasBundle.getInt(MainActivity.KEY_SELECTED_RECIPE_ID);
+        if (getIntent().getExtras() != null) {
+            RECIPE_ID = getIntent().getIntExtra(MainActivity.KEY_SELECTED_RECIPE_ID, -1);
         }
 
         // setup view using RECIPE_ID from bundle (parent) or field (child)
@@ -175,6 +174,7 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
             stepActivityIntent.putExtras(detailBundle);
             startActivity(stepActivityIntent);
         } else { // tablet layout
+            // add initial fragment
             StepFragment stepsListFragment = StepFragment.newInstance(RECIPE_ID, selectedStep.getId());
             fragmentManager.beginTransaction()
                     .replace(R.id.frag_step, stepsListFragment)

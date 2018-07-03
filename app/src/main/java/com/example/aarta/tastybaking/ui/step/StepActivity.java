@@ -32,14 +32,13 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
         if (mainExtrasBundle != null) {
             int RECIPE_ID = mainExtrasBundle.getInt(MainActivity.KEY_SELECTED_RECIPE_ID);
             int STEP_ID = mainExtrasBundle.getInt(DetailActivity.KEY_SELECTED_STEP_ID);
-            // only create initial fragment if there was no configuration change
+            // only create fragment if there was no configuration change
             if (savedInstanceState == null) {
-                // add initial fragment
                 StepFragment stepsListFragment = StepFragment.newInstance(RECIPE_ID, STEP_ID);
                 fragmentManager.beginTransaction()
                         .add(R.id.frag_step, stepsListFragment)
                         .commit();
-                setupActionBar(getResources().getString(R.string.step_details));
+                setupActionBar();
             }
         }
     }
@@ -75,9 +74,8 @@ public class StepActivity extends AppCompatActivity implements StepFragment.onSt
             switchStep(currentRecipeID, nextStepID);
     }
 
-    public void setupActionBar(String heading) {
+    public void setupActionBar() {
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(heading);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
