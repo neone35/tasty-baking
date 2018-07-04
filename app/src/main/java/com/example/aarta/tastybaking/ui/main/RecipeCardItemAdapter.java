@@ -42,6 +42,8 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Recipe} and makes a call to the
  * specified {@link onRecipeCardsListFragmentInteractionListener}.
@@ -92,6 +94,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
             // listen for exoPlayer thumbnail play button click
             holder.mPlayIconButton.setOnClickListener(v -> {
                 // release if new thumbnail clicked without recyclerview scroll before
+                Timber.d("Play button has been clicked");
                 if (!EXO_RELEASED) {
                     mStepExoPlayer.release();
                     mStepExoPlayer = getExoPlayer(mContext, lastNotEmptyVideoURL, holder);

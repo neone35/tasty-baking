@@ -69,11 +69,24 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.8.1'
 
     // TEST DEPENDENCIES
+    // Required for local unit tests (JUnit 4 framework)
     testImplementation 'junit:junit:4.12'
+    // Required for instrumented tests
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    // room
     testImplementation "android.arch.core:core-testing:$aac_v"
     testImplementation "android.arch.persistence.room:testing:$room_v"
+    // stetho
     implementation 'com.facebook.stetho:stetho:1.5.0' // DB inspection in chrome
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    // espresso
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
 }

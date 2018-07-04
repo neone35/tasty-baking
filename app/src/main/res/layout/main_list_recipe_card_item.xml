@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:id="@+id/cv_recipe_card"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground">
@@ -52,7 +53,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/shape_round_corner"
                         android:contentDescription="@string/recipe_video_thumbnail"
-                        android:visibility="gone" />
+                        android:visibility="invisible" />
 
                 </FrameLayout>
 
@@ -60,7 +61,7 @@
                     android:id="@+id/exo_step_player"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
 
             </FrameLayout>
 
