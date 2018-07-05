@@ -72,6 +72,33 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         return new ViewHolder(view);
     }
 
+    public static void loadVideoThumbnail(Context ctx, String videoURL, ImageButton playButton, ImageView thumbnailView) {
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
+        GlideApp.with(ctx)
+                .load(videoURL)
+                .placeholder(circularProgressDrawable)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                        playButton.setVisibility(View.VISIBLE);
+                        thumbnailView.setImageDrawable(resource);
+                        return true;
+                    }
+                })
+                .into(thumbnailView);
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+        switchToThumbnailView(holder);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         // bind recipe model objects
@@ -84,7 +111,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         // find last step video (result is best seen)
         String lastNotEmptyVideoURL = getLastVideoURL(position);
         // load thumbnail into imageView with Glide
-        loadVideoThumbnail(mContext, lastNotEmptyVideoURL, holder);
+        loadVideoThumbnail(mContext, lastNotEmptyVideoURL, holder.mPlayIconButton, holder.mThumbnailView);
 
         // check if adapter is attached outside widget config
         // enable exo player & play button listener only when launched normally (not as widget config)
@@ -126,33 +153,6 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
                 mListener.onCardListFragmentInteraction(holder.mRecipe);
             }
         });
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull ViewHolder holder) {
-        super.onViewRecycled(holder);
-        switchToThumbnailView(holder);
-    }
-
-    public static void loadVideoThumbnail(Context ctx, String videoURL, ViewHolder holder) {
-        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
-        GlideApp.with(ctx)
-                .load(videoURL)
-                .placeholder(circularProgressDrawable)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
-                        holder.mPlayIconButton.setVisibility(View.VISIBLE);
-                        holder.mThumbnailView.setImageDrawable(resource);
-                        return true;
-                    }
-                })
-                .into(holder.mThumbnailView);
     }
 
     private void switchToExoPlayerView(ViewHolder holder) {

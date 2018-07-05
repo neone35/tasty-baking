@@ -134,21 +134,21 @@ public class StepFragment extends Fragment {
                 if (oneStep != null) {
                     String thumbnailURL = oneStep.getThumbnailURL();
                     String videoURL = oneStep.getVideoURL();
-                    boolean thumbnailLoaded = loadVideoThumbnail(ctx, thumbnailURL, videoURL, ivThumbnailHolder);
+                    boolean thumbnailLoaded = loadVideoThumbnail(ctx, thumbnailURL, videoURL, ivThumbnailHolder, exoPlayButton);
                     // if thumbnail loaded and there was no config change,
                     // show play button and listen for its click
                     if (savedInstanceState == null && thumbnailLoaded) {
                         if (!videoURL.isEmpty()) {
-                            exoPlayButton.setVisibility(View.VISIBLE);
                             // switch to fullscreen on mobile (It's not DetailActivity)
-                            switchToFullScreenOnMobile(true);
+                            switchToFullScreenOnMobileInLandscape(true);
+                            // assign mMediaSource at videoURL to exoPlayer trackSelector
+                            mStepExoPlayer = getPreparedExoPlayer(ctx, oneStep.getVideoURL());
+                            // player is playing as soon as it's ready or hidden on error
+                            setExoListeners(ctx, mStepExoPlayer);
+                            // play on click
                             exoPlayButton.setOnClickListener(v -> {
-                                // assign mMediaSource at videoURL to exoPlayer trackSelector
-                                mStepExoPlayer = getPreparedExoPlayer(ctx, oneStep.getVideoURL());
                                 mStepExoPlayerView.setPlayer(mStepExoPlayer);
-                                // player is playing as soon as it's ready
-                                // or hidden on error
-                                setExoListeners(ctx, mStepExoPlayer);
+                                mStepExoPlayerView.setVisibility(View.VISIBLE);
                                 mStepExoPlayer.setPlayWhenReady(true);
                                 mStepExoPlayerView.setControllerAutoShow(true);
                             });
@@ -159,7 +159,7 @@ public class StepFragment extends Fragment {
                             // show message
                             Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
                             // switch to portrait (cancel fullscreen)
-                            switchToFullScreenOnMobile(false);
+                            switchToFullScreenOnMobileInLandscape(false);
                         }
                     }
                     // setup other views
@@ -177,7 +177,7 @@ public class StepFragment extends Fragment {
         return stepBinding.getRoot();
     }
 
-    private void switchToFullScreenOnMobile(boolean switchFullscreen) {
+    private void switchToFullScreenOnMobileInLandscape(boolean switchFullscreen) {
         if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
             if (getActivity() instanceof StepActivity) {
                 if (switchFullscreen) {
@@ -198,7 +198,6 @@ public class StepFragment extends Fragment {
             boolean isPlayerPlaying = savedInstanceState.getBoolean(KEY_IS_PLAYER_PLAYING);
             Timber.d("Saved player position is %s", savedPlayerPos);
             Timber.d("Is player playing? %s", isPlayerPlaying);
-            Timber.d("Is exo player null? %s", mStepExoPlayer == null);
             mStepExoPlayer.seekTo(savedPlayerPos);
             mStepExoPlayer.setPlayWhenReady(isPlayerPlaying);
         }
@@ -250,9 +249,9 @@ public class StepFragment extends Fragment {
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 super.onPlayerStateChanged(playWhenReady, playbackState);
                 if (playbackState == Player.STATE_READY) {
-                    switchToFullScreenOnMobile(true);
+                    switchToFullScreenOnMobileInLandscape(true);
                     // show exoPlayer and hide loading indicator
-                    mStepExoPlayerView.setVisibility(View.VISIBLE);
+                    Timber.d("Playback state is %s", playbackState);
                     mPbProgressDrawableView.setVisibility(View.GONE);
                 }
             }
@@ -265,29 +264,39 @@ public class StepFragment extends Fragment {
                 mPbProgressDrawableView.setVisibility(View.GONE);
                 mMasterExoHolder.setVisibility(View.GONE);
                 // if error occurred in landscape, change to portrait config to exit fullscreen
-                switchToFullScreenOnMobile(false);
+                switchToFullScreenOnMobileInLandscape(false);
                 Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
             }
         };
         stepExoPlayer.addListener(defaultEventListener);
     }
 
-    private boolean loadVideoThumbnail(Context ctx, String thumbnailURL, String videoURL, ImageView ivThumbnailHolder) {
+    private boolean loadVideoThumbnail(Context ctx, String thumbnailURL, String videoURL,
+                                       ImageView ivThumbnailHolder, ImageButton playButton) {
         CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
         Drawable thumbnailDrawable = ContextCompat.getDrawable(ctx, R.drawable.img_food_placeholder);
-        // if thumbnailURL is empty, load local placeholder drawable
+        // 1st load thumbnail from provided JSON URL
         if (!thumbnailURL.isEmpty()) {
             GlideApp.with(ctx)
                     .load(thumbnailURL)
                     .placeholder(circularProgressDrawable)
                     .into(ivThumbnailHolder);
+            playButton.setVisibility(View.VISIBLE);
             return true;
         } else {
-            GlideApp.with(ctx)
-                    .load(thumbnailDrawable)
-                    .placeholder(circularProgressDrawable)
-                    .into(ivThumbnailHolder);
-            return true;
+            if (!videoURL.isEmpty()) {
+                // 2nd load thumbnail straight from mp4 with glide
+                RecipeCardItemAdapter.loadVideoThumbnail(ctx, videoURL, playButton, ivThumbnailHolder);
+                return true;
+            } else {
+                // 3rd load local drawable
+                GlideApp.with(ctx)
+                        .load(thumbnailDrawable)
+                        .placeholder(circularProgressDrawable)
+                        .into(ivThumbnailHolder);
+                playButton.setVisibility(View.VISIBLE);
+                return true;
+            }
         }
     }
 
@@ -295,35 +304,48 @@ public class StepFragment extends Fragment {
     private void setLandscapeConfig() {
         // hide action bar
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
-        // set exoPlayer to match parent
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mMasterExoHolder.getLayoutParams();
-        params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-        params.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
-        params.setMargins(0, 0, 0, 0);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginEnd(0);
-            params.setMarginStart(0);
+
+        // find out device type to adjust initial params back
+        if (getActivity() instanceof DetailActivity) {
+            // TABLET
+            // set exoPlayer dimensions back to initial
+            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            Resources res = mMasterExoHolder.getContext().getResources();
+            int tabletPlayerHeight = (int) res.getDimension(R.dimen.exo_player_height_tablet);
+            int tabletPlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin_tablet);
+            setInitialPlayerParams(params, tabletPlayerHeight, tabletPlayerMargin);
+        } else if (getActivity() instanceof StepActivity) {
+            // MOBILE
+            // set exoPlayer fullscreen
+            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            params.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
+            params.setMargins(0, 0, 0, 0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                params.setMarginEnd(0);
+                params.setMarginStart(0);
+            }
         }
         mMasterExoHolder.setLayoutParams(params);
-
     }
 
     private void setPortraitConfig() {
         // show action bar
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
-        // set exoPlayer dimensions back to initial
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mMasterExoHolder.getLayoutParams();
         params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
 
+        // set exoPlayer dimensions back to initial
         Resources res = mMasterExoHolder.getContext().getResources();
+        int tabletPlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin_tablet);
+        int mobilePlayerHeight = (int) res.getDimension(R.dimen.exo_player_height);
+        int mobilePlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin);
         // find out device type to adjust initial params back
         if (getActivity() instanceof DetailActivity) {
-            int tabletPlayerHeight = (int) res.getDimension(R.dimen.exo_player_height_tablet);
-            int tabletPlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin_tablet);
-            setInitialPlayerParams(params, tabletPlayerHeight, tabletPlayerMargin);
+            // TABLET
+            setInitialPlayerParams(params, mobilePlayerHeight, tabletPlayerMargin);
         } else if (getActivity() instanceof StepActivity) {
-            int mobilePlayerHeight = (int) res.getDimension(R.dimen.exo_player_height);
-            int mobilePlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin);
+            // MOBILE
             setInitialPlayerParams(params, mobilePlayerHeight, mobilePlayerMargin);
         }
         mMasterExoHolder.setLayoutParams(params);
@@ -381,7 +403,7 @@ public class StepFragment extends Fragment {
         super.onPause();
         Timber.d("onPause is called");
         // onStop is only called by system, so release earlier
-        if (Util.SDK_INT <= 23 && mStepExoPlayer != null && !isStateSaved()) {
+        if (Util.SDK_INT <= 23 && mStepExoPlayer != null) {
             mStepExoPlayer.release();
             Timber.d("Player has been released");
         }
@@ -392,9 +414,9 @@ public class StepFragment extends Fragment {
     public void onStop() {
         super.onStop();
         // newer devices support Multi-Window and before it call onPause
-        // we want to keep player in this mode
+        // we want to keep player in this mode in onPause
         Timber.d("onStop is called");
-        if (Util.SDK_INT > 23 && mStepExoPlayer != null && !isStateSaved()) {
+        if (Util.SDK_INT > 23 && mStepExoPlayer != null) {
             mStepExoPlayer.release();
             Timber.d("Player has been released");
         }

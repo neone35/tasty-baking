@@ -2,7 +2,6 @@
 <resources>
     <dimen name="exo_player_height_tablet">300dp</dimen>
     <dimen name="exo_player_margin_tablet">16dp</dimen>
-    <dimen name="exo_play_btn_size_tablet">120dp</dimen>
     <dimen name="exo_player_height">200dp</dimen>
     <dimen name="exo_player_margin">8dp</dimen>
     <dimen name="exo_play_btn_size">80dp</dimen>
@@ -27,4 +26,6 @@
     <dimen name="ingredient_widget_app_title_margin">4dp</dimen>
     <dimen name="ingredients_steps_switch_btn_margin">8dp</dimen>
     <dimen name="main_list_margin">8dp</dimen>
+    <dimen name="main_recipe_card_list_tablet_port_height">110dp</dimen>
+    <dimen name="main_recipe_card_list_tablet_land_height">180dp</dimen>
 </resources>

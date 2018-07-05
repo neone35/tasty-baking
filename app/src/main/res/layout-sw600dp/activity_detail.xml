@@ -16,7 +16,7 @@
             android:orientation="vertical">
 
             <include
-                android:id="@+id/inc_recipe_info"
+                android:id="@+id/inc_recipe_card"
                 layout="@layout/main_list_recipe_card_item" />
 
             <Button
@@ -32,6 +32,9 @@
             <FrameLayout
                 android:id="@+id/frag_detail_list"
                 android:layout_width="match_parent"
+                android:layout_marginBottom="@dimen/detail_list_margin"
+                android:layout_marginLeft="@dimen/detail_list_margin"
+                android:layout_marginRight="@dimen/detail_list_margin"
                 android:layout_height="match_parent"
                 tools:layout="@layout/detail_list" />
 

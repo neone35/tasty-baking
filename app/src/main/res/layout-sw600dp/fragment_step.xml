@@ -1,73 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_step_frag_tablet"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".ui.step.StepFragment">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/cl_step_main"
+    <FrameLayout
+        android:id="@+id/fl_step_frag_tablet"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/inc_exo_holder"
-            layout="@layout/exo_holder_include" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_step_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ScrollView
-            android:id="@+id/sv_description_holder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/step_description_margin"
-            android:layout_marginEnd="@dimen/step_description_margin"
-            android:layout_marginLeft="@dimen/step_description_margin"
-            android:layout_marginRight="@dimen/step_description_margin"
-            android:layout_marginStart="@dimen/step_description_margin"
-            android:layout_marginTop="@dimen/step_description_margin_top"
-            app:layout_constraintBottom_toBottomOf="@+id/cl_step_main"
-            app:layout_constraintEnd_toEndOf="@+id/inc_exo_holder"
-            app:layout_constraintStart_toStartOf="@+id/inc_exo_holder"
-            app:layout_constraintTop_toBottomOf="@+id/inc_exo_holder">
+            <include
+                android:id="@+id/inc_exo_holder"
+                layout="@layout/exo_holder_include" />
 
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <ScrollView
+                android:id="@+id/sv_description_holder"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/step_description_margin"
+                android:layout_marginEnd="@dimen/step_description_margin"
+                android:layout_marginLeft="@dimen/step_description_margin"
+                android:layout_marginRight="@dimen/step_description_margin"
+                android:layout_marginStart="@dimen/step_description_margin"
+                android:layout_marginTop="@dimen/step_description_margin_top"
+                app:layout_constraintBottom_toBottomOf="@+id/cl_step_main"
+                app:layout_constraintEnd_toEndOf="@+id/inc_exo_holder"
+                app:layout_constraintStart_toStartOf="@+id/inc_exo_holder"
+                app:layout_constraintTop_toBottomOf="@+id/inc_exo_holder">
 
-                <ProgressBar
-                    android:id="@+id/pb_cpd_holder"
-                    android:layout_width="@dimen/step_exo_progress_bar_size"
-                    android:layout_height="@dimen/step_exo_progress_bar_size"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tv_step_short_description"
-                    style="@style/TextAppearance.AppCompat.Headline"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/pb_cpd_holder"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Starting prep looooooooooooong" />
+                    <ProgressBar
+                        android:id="@+id/pb_cpd_holder"
+                        android:layout_width="@dimen/step_exo_progress_bar_size"
+                        android:layout_height="@dimen/step_exo_progress_bar_size"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_step_description"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/step_long_description_margin"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_step_short_description"
-                    tools:text="1. Preheat the oven to 350°F. Butter a 9' deep dish pie pan." />
+                    <TextView
+                        android:id="@+id/tv_step_short_description"
+                        style="@style/TextAppearance.AppCompat.Headline"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toStartOf="@+id/pb_cpd_holder"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Starting prep looooooooooooong" />
 
-            </android.support.constraint.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/tv_step_description"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/step_long_description_margin"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_step_short_description"
+                        tools:text="1. Preheat the oven to 350°F. Butter a 9' deep dish pie pan." />
 
-        </ScrollView>
+                </android.support.constraint.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+            </ScrollView>
 
-</FrameLayout>
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
+
+</layout>
