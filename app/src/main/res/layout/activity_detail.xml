@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/inc_recipe_info"
+            android:id="@+id/inc_recipe_card"
             layout="@layout/main_list_recipe_card_item" />
 
         <Button

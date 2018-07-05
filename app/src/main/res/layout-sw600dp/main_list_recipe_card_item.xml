@@ -18,52 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <FrameLayout
-                android:id="@+id/fl_exo_holder"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:id="@+id/fl_exo_thumbnail_holder"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/iv_recipe_thumbnail"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="@string/recipe_video_thumbnail"
-                        android:visibility="visible"
-                        tools:src="@drawable/img_food_placeholder" />
-
-                    <ImageButton
-                        android:id="@+id/ib_recipe_play_icon"
-                        style="@style/ExoMediaButton.Play"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/shape_round_corner"
-                        android:contentDescription="@string/recipe_video_thumbnail"
-                        android:visibility="gone" />
-
-                </FrameLayout>
-
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/exo_step_player"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
-
-            </FrameLayout>
+            <include
+                android:id="@+id/inc_exo_holder"
+                layout="@layout/exo_holder_include" />
 
             <TextView
                 android:id="@+id/tv_recipe_name"
@@ -74,7 +31,7 @@
                 android:layout_marginTop="8dp"
                 android:textAppearance="?attr/textAppearanceListItem"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fl_exo_holder"
+                app:layout_constraintTop_toBottomOf="@+id/inc_exo_holder"
                 tools:text="Nutella Pie" />
 
             <android.support.constraint.ConstraintLayout

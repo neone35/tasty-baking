@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
@@ -141,7 +142,8 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
 
     private void hideRecipeDetailImage() {
         // hide recipe image in detail only
-        detailBinding.incRecipeInfo.flExoHolder.setVisibility(View.GONE);
+        FrameLayout includedRecipeCardExoHolder = detailBinding.incRecipeCard.incExoHolder.flExoHolderInclude;
+        includedRecipeCardExoHolder.setVisibility(View.GONE);
     }
 
     private void setOneRecipeInfo(int recipeID) {
@@ -155,10 +157,10 @@ public class DetailActivity extends AppCompatActivity implements DetailListFragm
                 String ingredientNum = String.valueOf(oneRecipe.getIngredients().size());
                 String stepsNum = String.valueOf(oneRecipe.getSteps().size());
                 String servingsNum = String.valueOf(oneRecipe.getServings());
-                detailBinding.incRecipeInfo.tvRecipeName.setText(recipeName);
-                detailBinding.incRecipeInfo.tvIngredientNum.setText(ingredientNum);
-                detailBinding.incRecipeInfo.tvStepsNum.setText(stepsNum);
-                detailBinding.incRecipeInfo.tvServingsNum.setText(servingsNum);
+                detailBinding.incRecipeCard.tvRecipeName.setText(recipeName);
+                detailBinding.incRecipeCard.tvIngredientNum.setText(ingredientNum);
+                detailBinding.incRecipeCard.tvStepsNum.setText(stepsNum);
+                detailBinding.incRecipeCard.tvServingsNum.setText(servingsNum);
             }
         });
     }

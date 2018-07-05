@@ -4,25 +4,31 @@ package com.example.aarta.tastybaking.ui.step;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.aarta.tastybaking.GlideApp;
 import com.example.aarta.tastybaking.R;
 import com.example.aarta.tastybaking.data.models.Recipe;
 import com.example.aarta.tastybaking.data.models.Step;
+import com.example.aarta.tastybaking.databinding.FragmentStepBinding;
 import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModel;
 import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModelFactory;
@@ -65,6 +71,7 @@ public class StepFragment extends Fragment {
     private int mCurrentOrientation;
     private ProgressBar mPbProgressDrawableView;
     private MediaSource mMediaSource;
+    private FragmentStepBinding stepBinding;
 
     public StepFragment() {
         // Required empty public constructor
@@ -91,11 +98,11 @@ public class StepFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_step, container, false);
+        stepBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_step, container, false);
         Context ctx = this.getContext();
 
-        // show loading indicator
-        mPbProgressDrawableView = view.findViewById(R.id.pb_cpd_holder);
+        // create && show loading indicator
+        mPbProgressDrawableView = stepBinding.pbCpdHolder;
         CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(this.getContext(), 10f, 25f);
         mPbProgressDrawableView.setIndeterminateDrawable(circularProgressDrawable);
 
@@ -104,14 +111,21 @@ public class StepFragment extends Fragment {
         // Tie fragment & ViewModel together
         OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
-            mStepExoPlayerView = view.findViewById(R.id.exo_step_player);
-            TextView tvShortDescr = view.findViewById(R.id.tv_step_short_description);
-            TextView tvLongDescr = view.findViewById(R.id.tv_step_description);
-            Button btnPreviousStep = view.findViewById(R.id.btn_previous_step);
-            Button btnNextStep = view.findViewById(R.id.btn_next_step);
+            ImageView ivThumbnailHolder = stepBinding.incExoHolder.ivRecipeThumbnail;
+            mStepExoPlayerView = stepBinding.incExoHolder.exoStepPlayer;
+            TextView tvShortDescr = stepBinding.tvStepShortDescription;
+            TextView tvLongDescr = stepBinding.tvStepDescription;
+            Button btnPreviousStep = stepBinding.btnPreviousStep;
+            Button btnNextStep = stepBinding.btnNextStep;
             if (oneRecipe != null) {
                 oneStep = oneRecipe.getSteps().get(mStepID);
                 if (oneStep != null) {
+                    String thumbnailURL = oneStep.getThumbnailURL();
+
+                    if (loadVideoThumbnail(ctx, thumbnailURL, ivThumbnailHolder)) {
+
+                    }
+
                     // assign mMediaSource at videoURL to exoPlayer trackSelector
                     mStepExoPlayer = getExoPlayer(ctx, oneStep.getVideoURL());
                     // prepare player with assigned mediaSource
@@ -133,7 +147,7 @@ public class StepFragment extends Fragment {
                         // on tablet buttons are GONE, so no need to set up listeners
                         setBtnListeners(btnPreviousStep, btnNextStep, oneRecipe);
                         // hide next / prev button if step doesn't exist
-                        controlBtnVisibility(oneRecipe, view);
+                        controlBtnVisibility(oneRecipe, btnPreviousStep, btnNextStep);
                     }
                 } else {
                     Toast.makeText(ctx, "Recipe step not found", Toast.LENGTH_SHORT).show();
@@ -143,7 +157,25 @@ public class StepFragment extends Fragment {
             }
         });
 
-        return view;
+        return stepBinding.getRoot();
+    }
+
+    private boolean loadVideoThumbnail(Context ctx, String thumbnailURL, ImageView ivThumbnailHolder) {
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
+        Drawable thumbnailDrawable = ContextCompat.getDrawable(ctx, R.drawable.img_food_placeholder);
+        // if thumbnailURL is empty, load local placeholder drawable
+        if (!thumbnailURL.isEmpty()) {
+            GlideApp.with(ctx)
+                    .load(thumbnailURL)
+                    .placeholder(circularProgressDrawable)
+                    .into(ivThumbnailHolder);
+        } else {
+            GlideApp.with(ctx)
+                    .load(thumbnailDrawable)
+                    .placeholder(circularProgressDrawable)
+                    .into(ivThumbnailHolder);
+        }
+        return true;
     }
 
 
@@ -239,13 +271,13 @@ public class StepFragment extends Fragment {
         }
     }
 
-    private void controlBtnVisibility(Recipe oneRecipe, View view) {
+    private void controlBtnVisibility(Recipe oneRecipe, Button btnPreviousStep, Button btnNextStep) {
         int firstStepID = oneRecipe.getSteps().get(0).getId();
         int lastStepID = oneRecipe.getSteps().size() - 1;
         if (mStepID == lastStepID) {
-            view.findViewById(R.id.btn_next_step).setVisibility(View.INVISIBLE);
+            btnNextStep.setVisibility(View.INVISIBLE);
         } else if (mStepID == firstStepID) {
-            view.findViewById(R.id.btn_previous_step).setVisibility(View.INVISIBLE);
+            btnPreviousStep.setVisibility(View.INVISIBLE);
         }
     }
 
