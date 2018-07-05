@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="exo_player_height_tablet">300dp</dimen>
+    <dimen name="exo_player_margin_tablet">16dp</dimen>
+    <dimen name="exo_play_btn_size_tablet">120dp</dimen>
+    <dimen name="exo_player_height">200dp</dimen>
+    <dimen name="exo_player_margin">8dp</dimen>
+    <dimen name="exo_play_btn_size">80dp</dimen>
+    <dimen name="ingredients_steps_switch_btn_height">60dp</dimen>
+    <dimen name="detail_list_margin">8dp</dimen>
+    <dimen name="step_description_margin">8dp</dimen>
+    <dimen name="step_description_margin_top">16dp</dimen>
+    <dimen name="step_exo_progress_bar_size">40dp</dimen>
+    <dimen name="step_short_description_margin">8dp</dimen>
+    <dimen name="step_long_description_margin">8dp</dimen>
+    <dimen name="step_switch_btn_height">60dp</dimen>
+    <dimen name="step_switch_btn_margin">8dp</dimen>
+    <dimen name="step_switch_btn_margin_parent">16dp</dimen>
+    <dimen name="ingredient_widget_quantity_margin">8dp</dimen>
+    <dimen name="ingredient_widget_item_margin">8dp</dimen>
+    <dimen name="ingredient_widget_title_holder_top_margin">8dp</dimen>
+    <dimen name="ingredient_widget_title_text_size">20sp</dimen>
+    <dimen name="ingredient_widget_title_margin">8dp</dimen>
+    <dimen name="ingredient_widget_label_padding">4dp</dimen>
+    <dimen name="ingredient_widget_label_text_size">18sp</dimen>
+    <dimen name="ingredient_widget_list_bottom_margin">4dp</dimen>
+    <dimen name="ingredient_widget_app_title_margin">4dp</dimen>
+    <dimen name="ingredients_steps_switch_btn_margin">8dp</dimen>
+    <dimen name="main_list_margin">8dp</dimen>
 </resources>

@@ -13,16 +13,16 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:paddingTop="@dimen/ingredient_widget_title_holder_top_margin">
 
         <TextView
             android:id="@+id/tv_ingredient_widget_recipe_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="@dimen/ingredient_widget_title_margin"
+            android:layout_marginRight="@dimen/ingredient_widget_title_margin"
             android:textColor="@color/colorSecondaryDark"
-            android:textSize="20sp"
+            android:textSize="@dimen/ingredient_widget_title_text_size"
             tools:text="Nutella Pie" />
 
         <TextView
@@ -31,11 +31,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@color/colorSecondaryDark"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="@dimen/ingredient_widget_label_padding"
+            android:paddingRight="@dimen/ingredient_widget_label_padding"
             android:text="@string/ingredients"
             android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+            android:textSize="@dimen/ingredient_widget_label_text_size" />
 
     </LinearLayout>
 
@@ -44,7 +44,7 @@
         style="@style/ingredientItem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/ingredient_widget_list_bottom_margin"
         android:layout_weight="1"
         android:background="#FFF">
 
@@ -54,7 +54,7 @@
         android:id="@+id/tv_ingredient_widget_app_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/ingredient_widget_app_title_margin"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_weight="0"

@@ -21,9 +21,10 @@
 
             <Button
                 android:id="@+id/btn_ingredients"
-                style="@style/detailBtnMargins"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginLeft="@dimen/ingredients_steps_switch_btn_margin"
+                android:layout_marginRight="@dimen/ingredients_steps_switch_btn_margin"
                 android:text="@string/ingredients"
                 android:theme="@style/AppTheme.Button.Primary"
                 tools:text="@string/ingredients" />

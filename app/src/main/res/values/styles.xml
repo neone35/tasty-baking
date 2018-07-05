@@ -9,10 +9,6 @@
         <item name="cardViewStyle">@style/CardView</item>
     </style>
 
-    <style name="cardTitle" parent="TextAppearance.AppCompat.Subhead">
-        <item name="android:layout_margin">@dimen/text_margin</item>
-    </style>
-
     <style name="cardLabels" parent="TextAppearance.AppCompat.Headline">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">12sp</item>
@@ -27,11 +23,6 @@
     <style name="detailTitle" parent="TextAppearance.AppCompat.Headline">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_margin">8dp</item>
-    </style>
-
-    <style name="detailBtnMargins">
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
     </style>
 
     <style name="AppTheme.Button.Primary" parent="Widget.AppCompat.Button.Colored">

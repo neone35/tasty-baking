@@ -4,12 +4,14 @@ package com.example.aarta.tastybaking.ui.step;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -33,6 +37,7 @@ import com.example.aarta.tastybaking.ui.detail.DetailActivity;
 import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModel;
 import com.example.aarta.tastybaking.ui.detail.OneRecipeViewModelFactory;
 import com.example.aarta.tastybaking.ui.main.MainActivity;
+import com.example.aarta.tastybaking.ui.main.RecipeCardItemAdapter;
 import com.example.aarta.tastybaking.utils.InjectorUtils;
 import com.example.aarta.tastybaking.utils.RecipeUtils;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -70,8 +75,10 @@ public class StepFragment extends Fragment {
     private PlayerView mStepExoPlayerView;
     private int mCurrentOrientation;
     private ProgressBar mPbProgressDrawableView;
-    private MediaSource mMediaSource;
     private FragmentStepBinding stepBinding;
+    private static final String KEY_PLAYER_POSITION = "player_position";
+    private static final String KEY_IS_PLAYER_PLAYING = "is_player_playing";
+    private FrameLayout mMasterExoHolder;
 
     public StepFragment() {
         // Required empty public constructor
@@ -100,6 +107,7 @@ public class StepFragment extends Fragment {
                              Bundle savedInstanceState) {
         stepBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_step, container, false);
         Context ctx = this.getContext();
+        mCurrentOrientation = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation;
 
         // create && show loading indicator
         mPbProgressDrawableView = stepBinding.pbCpdHolder;
@@ -111,44 +119,53 @@ public class StepFragment extends Fragment {
         // Tie fragment & ViewModel together
         OneRecipeViewModel mViewModel = ViewModelProviders.of(this, factory).get(OneRecipeViewModel.class);
         mViewModel.getOneRecipe().observe(this, oneRecipe -> {
+            // find views
+            mMasterExoHolder = stepBinding.incExoHolder.flExoHolderInclude;
             ImageView ivThumbnailHolder = stepBinding.incExoHolder.ivRecipeThumbnail;
             mStepExoPlayerView = stepBinding.incExoHolder.exoStepPlayer;
             TextView tvShortDescr = stepBinding.tvStepShortDescription;
             TextView tvLongDescr = stepBinding.tvStepDescription;
             Button btnPreviousStep = stepBinding.btnPreviousStep;
             Button btnNextStep = stepBinding.btnNextStep;
+            ImageButton exoPlayButton = stepBinding.incExoHolder.ibRecipePlayIcon;
+            // assign views
             if (oneRecipe != null) {
                 oneStep = oneRecipe.getSteps().get(mStepID);
                 if (oneStep != null) {
                     String thumbnailURL = oneStep.getThumbnailURL();
-
-                    if (loadVideoThumbnail(ctx, thumbnailURL, ivThumbnailHolder)) {
-
+                    String videoURL = oneStep.getVideoURL();
+                    boolean thumbnailLoaded = loadVideoThumbnail(ctx, thumbnailURL, videoURL, ivThumbnailHolder);
+                    // if thumbnail loaded and there was no config change,
+                    // show play button and listen for its click
+                    if (savedInstanceState == null && thumbnailLoaded) {
+                        if (!videoURL.isEmpty()) {
+                            exoPlayButton.setVisibility(View.VISIBLE);
+                            // switch to fullscreen on mobile (It's not DetailActivity)
+                            switchToFullScreenOnMobile(true);
+                            exoPlayButton.setOnClickListener(v -> {
+                                // assign mMediaSource at videoURL to exoPlayer trackSelector
+                                mStepExoPlayer = getPreparedExoPlayer(ctx, oneStep.getVideoURL());
+                                mStepExoPlayerView.setPlayer(mStepExoPlayer);
+                                // player is playing as soon as it's ready
+                                // or hidden on error
+                                setExoListeners(ctx, mStepExoPlayer);
+                                mStepExoPlayer.setPlayWhenReady(true);
+                                mStepExoPlayerView.setControllerAutoShow(true);
+                            });
+                        } else {
+                            // hide main exo holder and progress bar if videoURL is empty
+                            mMasterExoHolder.setVisibility(View.GONE);
+                            mPbProgressDrawableView.setVisibility(View.GONE);
+                            // show message
+                            Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
+                            // switch to portrait (cancel fullscreen)
+                            switchToFullScreenOnMobile(false);
+                        }
                     }
-
-                    // assign mMediaSource at videoURL to exoPlayer trackSelector
-                    mStepExoPlayer = getExoPlayer(ctx, oneStep.getVideoURL());
-                    // prepare player with assigned mediaSource
-                    mStepExoPlayer.prepare(mMediaSource);
-                    // tie view and player together
-                    mStepExoPlayerView.setPlayer(mStepExoPlayer);
-                    // animate exo loading
-                    setExoListeners(ctx, mStepExoPlayer);
-                    mStepExoPlayer.setPlayWhenReady(false);
-                    mStepExoPlayerView.setControllerAutoShow(true);
-
-                    mCurrentOrientation = Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation;
-                    // setup other views - only texts on new viewmodel bind
+                    // setup other views
                     RecipeUtils.setFormattedDescription(oneStep, tvLongDescr, tvShortDescr);
-
                     // enable step switch buttons on mobile only
-                    if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
-                        // It's StepActivity (mobile, not DetailActivity)
-                        // on tablet buttons are GONE, so no need to set up listeners
-                        setBtnListeners(btnPreviousStep, btnNextStep, oneRecipe);
-                        // hide next / prev button if step doesn't exist
-                        controlBtnVisibility(oneRecipe, btnPreviousStep, btnNextStep);
-                    }
+                    setupStepSwitchButtonsOnMobile(oneRecipe, btnPreviousStep, btnNextStep);
                 } else {
                     Toast.makeText(ctx, "Recipe step not found", Toast.LENGTH_SHORT).show();
                 }
@@ -160,24 +177,69 @@ public class StepFragment extends Fragment {
         return stepBinding.getRoot();
     }
 
-    private boolean loadVideoThumbnail(Context ctx, String thumbnailURL, ImageView ivThumbnailHolder) {
-        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
-        Drawable thumbnailDrawable = ContextCompat.getDrawable(ctx, R.drawable.img_food_placeholder);
-        // if thumbnailURL is empty, load local placeholder drawable
-        if (!thumbnailURL.isEmpty()) {
-            GlideApp.with(ctx)
-                    .load(thumbnailURL)
-                    .placeholder(circularProgressDrawable)
-                    .into(ivThumbnailHolder);
-        } else {
-            GlideApp.with(ctx)
-                    .load(thumbnailDrawable)
-                    .placeholder(circularProgressDrawable)
-                    .into(ivThumbnailHolder);
+    private void switchToFullScreenOnMobile(boolean switchFullscreen) {
+        if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (getActivity() instanceof StepActivity) {
+                if (switchFullscreen) {
+                    setLandscapeConfig();
+                } else {
+                    setPortraitConfig();
+                }
+            }
         }
-        return true;
     }
 
+    // save and restore exoPlayer position and play/pause state
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && mStepExoPlayer != null) {
+            long savedPlayerPos = savedInstanceState.getLong(KEY_PLAYER_POSITION);
+            boolean isPlayerPlaying = savedInstanceState.getBoolean(KEY_IS_PLAYER_PLAYING);
+            Timber.d("Saved player position is %s", savedPlayerPos);
+            Timber.d("Is player playing? %s", isPlayerPlaying);
+            Timber.d("Is exo player null? %s", mStepExoPlayer == null);
+            mStepExoPlayer.seekTo(savedPlayerPos);
+            mStepExoPlayer.setPlayWhenReady(isPlayerPlaying);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mStepExoPlayer != null) {
+            long currentPlayerPos = mStepExoPlayer.getCurrentPosition();
+            boolean isPlayerPlaying = mStepExoPlayer.getPlayWhenReady();
+            outState.putLong(KEY_PLAYER_POSITION, currentPlayerPos);
+            outState.putBoolean(KEY_IS_PLAYER_PLAYING, isPlayerPlaying);
+        }
+    }
+
+    private void setupStepSwitchButtonsOnMobile(Recipe oneRecipe, Button btnPreviousStep, Button btnNextStep) {
+        // It's StepActivity (mobile, not DetailActivity)
+        // on tablet buttons are GONE, so no need to do this
+        if (getActivity() instanceof StepActivity) {
+            // set button listeners
+            btnPreviousStep.setOnClickListener(v -> {
+                if (null != mListener) {
+                    mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_PREVIOUS);
+                }
+            });
+            btnNextStep.setOnClickListener(v -> {
+                if (null != mListener) {
+                    mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_NEXT);
+                }
+            });
+            // control button visibility
+            int firstStepID = oneRecipe.getSteps().get(0).getId();
+            int lastStepID = oneRecipe.getSteps().size() - 1;
+            if (mStepID == lastStepID) {
+                btnNextStep.setVisibility(View.INVISIBLE);
+            } else if (mStepID == firstStepID) {
+                btnPreviousStep.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
 
     private void setExoListeners(Context ctx, SimpleExoPlayer stepExoPlayer) {
 
@@ -188,76 +250,92 @@ public class StepFragment extends Fragment {
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 super.onPlayerStateChanged(playWhenReady, playbackState);
                 if (playbackState == Player.STATE_READY) {
-                    // change to full screen only on mobile and in landscape
-                    if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                        if (Objects.requireNonNull(getActivity()).findViewById(R.id.ll_detail_tablet) == null) {
-                            setLandscapeConfig();
-                        }
-                    }
-                    // no animations yet
+                    switchToFullScreenOnMobile(true);
+                    // show exoPlayer and hide loading indicator
                     mStepExoPlayerView.setVisibility(View.VISIBLE);
                     mPbProgressDrawableView.setVisibility(View.GONE);
                 }
             }
 
-            // error, hide loading and leave player as GONE
+            // error loading video
             @Override
             public void onPlayerError(ExoPlaybackException error) {
                 Timber.e(error.toString());
-                Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
-                // hide loading indicator and player
+                // hide master exo holder and loading indicator
                 mPbProgressDrawableView.setVisibility(View.GONE);
-                mStepExoPlayerView.setVisibility(View.GONE);
-                // if error occurred in landscape, change to portrait config to load description
-                if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    setPortraitConfig();
-                }
+                mMasterExoHolder.setVisibility(View.GONE);
+                // if error occurred in landscape, change to portrait config to exit fullscreen
+                switchToFullScreenOnMobile(false);
+                Toast.makeText(ctx, "Video not found", Toast.LENGTH_SHORT).show();
             }
         };
         stepExoPlayer.addListener(defaultEventListener);
     }
 
-    private void setLandscapeConfig() {
-        // change UI only if player is attached
-        if (mStepExoPlayerView.getPlayer().getPlaybackError() == null) {
-            // hide action bar
-            Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
-            // set exoPlayer to match parent
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
-            params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-            params.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
-            params.setMargins(0, 0, 0, 0);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                params.setMarginEnd(0);
-                params.setMarginStart(0);
-            }
-            mStepExoPlayerView.setLayoutParams(params);
+    private boolean loadVideoThumbnail(Context ctx, String thumbnailURL, String videoURL, ImageView ivThumbnailHolder) {
+        CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
+        Drawable thumbnailDrawable = ContextCompat.getDrawable(ctx, R.drawable.img_food_placeholder);
+        // if thumbnailURL is empty, load local placeholder drawable
+        if (!thumbnailURL.isEmpty()) {
+            GlideApp.with(ctx)
+                    .load(thumbnailURL)
+                    .placeholder(circularProgressDrawable)
+                    .into(ivThumbnailHolder);
+            return true;
+        } else {
+            GlideApp.with(ctx)
+                    .load(thumbnailDrawable)
+                    .placeholder(circularProgressDrawable)
+                    .into(ivThumbnailHolder);
+            return true;
         }
+    }
+
+
+    private void setLandscapeConfig() {
+        // hide action bar
+        Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).hide();
+        // set exoPlayer to match parent
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mMasterExoHolder.getLayoutParams();
+        params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        params.height = ConstraintLayout.LayoutParams.MATCH_PARENT;
+        params.setMargins(0, 0, 0, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginEnd(0);
+            params.setMarginStart(0);
+        }
+        mMasterExoHolder.setLayoutParams(params);
+
     }
 
     private void setPortraitConfig() {
         // show action bar
         Objects.requireNonNull(((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar()).show();
         // set exoPlayer dimensions back to initial
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mStepExoPlayerView.getLayoutParams();
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mMasterExoHolder.getLayoutParams();
         params.width = ConstraintLayout.LayoutParams.MATCH_PARENT;
-        // find out device type to adjust initial height
-        float dpRatio = mStepExoPlayerView.getContext().getResources().getDisplayMetrics().density;
-        if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_tablet) != null) {
-            int TABLET_PLAYER_HEIGHT_PX = 350;
-            params.height = (int) (TABLET_PLAYER_HEIGHT_PX * dpRatio);
-        } else if (Objects.requireNonNull(getActivity()).findViewById(R.id.fl_step_frag_mobile) != null) {
-            int MOBILE_PLAYER_HEIGHT_PX = 200;
-            params.height = (int) (MOBILE_PLAYER_HEIGHT_PX * dpRatio);
+
+        Resources res = mMasterExoHolder.getContext().getResources();
+        // find out device type to adjust initial params back
+        if (getActivity() instanceof DetailActivity) {
+            int tabletPlayerHeight = (int) res.getDimension(R.dimen.exo_player_height_tablet);
+            int tabletPlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin_tablet);
+            setInitialPlayerParams(params, tabletPlayerHeight, tabletPlayerMargin);
+        } else if (getActivity() instanceof StepActivity) {
+            int mobilePlayerHeight = (int) res.getDimension(R.dimen.exo_player_height);
+            int mobilePlayerMargin = (int) res.getDimension(R.dimen.exo_player_margin);
+            setInitialPlayerParams(params, mobilePlayerHeight, mobilePlayerMargin);
         }
-        // set margins back to initial
-        int margin8DP = (int) (8 * dpRatio);
-        params.setMargins(margin8DP, margin8DP, margin8DP, margin8DP);
+        mMasterExoHolder.setLayoutParams(params);
+    }
+
+    private void setInitialPlayerParams(ConstraintLayout.LayoutParams params, int height, int margin) {
+        params.height = height;
+        params.setMargins(margin, margin, margin, margin);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginEnd(margin8DP);
-            params.setMarginStart(margin8DP);
+            params.setMarginEnd(margin);
+            params.setMarginStart(margin);
         }
-        mStepExoPlayerView.setLayoutParams(params);
     }
 
     @Override
@@ -271,30 +349,7 @@ public class StepFragment extends Fragment {
         }
     }
 
-    private void controlBtnVisibility(Recipe oneRecipe, Button btnPreviousStep, Button btnNextStep) {
-        int firstStepID = oneRecipe.getSteps().get(0).getId();
-        int lastStepID = oneRecipe.getSteps().size() - 1;
-        if (mStepID == lastStepID) {
-            btnNextStep.setVisibility(View.INVISIBLE);
-        } else if (mStepID == firstStepID) {
-            btnPreviousStep.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void setBtnListeners(Button btnPreviousStep, Button btnNextStep, Recipe oneRecipe) {
-        btnPreviousStep.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_PREVIOUS);
-            }
-        });
-        btnNextStep.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onStepFragmentInteraction(oneRecipe, mStepID, StepActivity.KEY_NEXT);
-            }
-        });
-    }
-
-    private SimpleExoPlayer getExoPlayer(Context ctx, String mp4VideoUriString) {
+    private SimpleExoPlayer getPreparedExoPlayer(Context ctx, String mp4VideoUriString) {
         Uri mp4VideoUri = Uri.parse(mp4VideoUriString);
         // 1. Create a default TrackSelector
         // Measures bandwidth during playback. Can be null if not required.
@@ -311,10 +366,38 @@ public class StepFragment extends Fragment {
             dataSourceFactory = new DefaultDataSourceFactory(ctx, Util.getUserAgent(ctx, appName), bandwidthMeter);
         }
         // This is the MediaSource representing the media to be played.
-        mMediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mp4VideoUri);
+        MediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(mp4VideoUri);
+
+        SimpleExoPlayer simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(ctx, trackSelector);
+        simpleExoPlayer.prepare(mediaSource);
 
         // Create and return player
-        return ExoPlayerFactory.newSimpleInstance(ctx, trackSelector);
+        return simpleExoPlayer;
+    }
+
+    // not in foreground
+    @Override
+    public void onPause() {
+        super.onPause();
+        Timber.d("onPause is called");
+        // onStop is only called by system, so release earlier
+        if (Util.SDK_INT <= 23 && mStepExoPlayer != null && !isStateSaved()) {
+            mStepExoPlayer.release();
+            Timber.d("Player has been released");
+        }
+    }
+
+    // no longer visible
+    @Override
+    public void onStop() {
+        super.onStop();
+        // newer devices support Multi-Window and before it call onPause
+        // we want to keep player in this mode
+        Timber.d("onStop is called");
+        if (Util.SDK_INT > 23 && mStepExoPlayer != null && !isStateSaved()) {
+            mStepExoPlayer.release();
+            Timber.d("Player has been released");
+        }
     }
 
     @Override
@@ -329,7 +412,7 @@ public class StepFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mStepExoPlayer.release();
+//        mStepExoPlayer.release();
     }
 
     public interface onStepFragmentInteractionListener {

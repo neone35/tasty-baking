@@ -16,16 +16,19 @@
         <Button
             android:id="@+id/btn_ingredients"
             android:theme="@style/AppTheme.Button.Primary"
-            style="@style/detailBtnMargins"
+            android:layout_height="@dimen/ingredients_steps_switch_btn_height"
+            android:layout_marginLeft="@dimen/ingredients_steps_switch_btn_margin"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_marginRight="@dimen/ingredients_steps_switch_btn_margin"
             android:text="@string/ingredients"
             tools:text="@string/ingredients" />
 
         <FrameLayout
             android:id="@+id/frag_detail_list"
             android:layout_width="match_parent"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/detail_list_margin"
+            android:layout_marginLeft="@dimen/detail_list_margin"
+            android:layout_marginRight="@dimen/detail_list_margin"
             android:layout_height="match_parent"
             tools:layout="@layout/detail_list" />
 

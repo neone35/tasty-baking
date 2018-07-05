@@ -21,12 +21,12 @@
             android:id="@+id/sv_description_holder"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="@dimen/step_description_margin"
+            android:layout_marginEnd="@dimen/step_description_margin"
+            android:layout_marginLeft="@dimen/step_description_margin"
+            android:layout_marginRight="@dimen/step_description_margin"
+            android:layout_marginStart="@dimen/step_description_margin"
+            android:layout_marginTop="@dimen/step_description_margin_top"
             app:layout_constraintBottom_toBottomOf="@+id/cl_step_main"
             app:layout_constraintEnd_toEndOf="@+id/inc_exo_holder"
             app:layout_constraintStart_toStartOf="@+id/inc_exo_holder"
@@ -38,8 +38,8 @@
 
                 <ProgressBar
                     android:id="@+id/pb_cpd_holder"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="@dimen/step_exo_progress_bar_size"
+                    android:layout_height="@dimen/step_exo_progress_bar_size"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,7 +58,7 @@
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/step_long_description_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_step_short_description"

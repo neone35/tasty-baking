@@ -20,6 +20,9 @@
 
             <include
                 android:id="@+id/inc_exo_holder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 layout="@layout/exo_holder_include" />
 
             <TextView

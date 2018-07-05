@@ -134,7 +134,7 @@ public class RecipeCardItemAdapter extends RecyclerView.Adapter<RecipeCardItemAd
         switchToThumbnailView(holder);
     }
 
-    private void loadVideoThumbnail(Context ctx, String videoURL, ViewHolder holder) {
+    public static void loadVideoThumbnail(Context ctx, String videoURL, ViewHolder holder) {
         CircularProgressDrawable circularProgressDrawable = RecipeUtils.getCircleProgressDrawable(ctx, 15f, 80f);
         GlideApp.with(ctx)
                 .load(videoURL)

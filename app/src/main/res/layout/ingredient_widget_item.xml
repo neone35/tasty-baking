@@ -5,7 +5,7 @@
     style="@style/ingredientItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="@dimen/ingredient_widget_item_margin"
     android:background="#FFF"
     android:orientation="horizontal">
 
@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="@dimen/ingredient_widget_title_margin"
+        android:layout_marginRight="@dimen/ingredient_widget_title_margin"
         android:layout_toLeftOf="@+id/tv_ingredient_widget_quantity"
         android:layout_toStartOf="@+id/tv_ingredient_widget_quantity"
         tools:text="@string/ingredient_name_sample" />
@@ -25,8 +25,8 @@
         android:id="@+id/tv_ingredient_widget_quantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="@dimen/ingredient_widget_quantity_margin"
+        android:layout_marginRight="@dimen/ingredient_widget_quantity_margin"
         android:layout_toLeftOf="@+id/tv_ingredient_widget_measure"
         android:layout_toStartOf="@+id/tv_ingredient_widget_measure"
         tools:text="@string/quantity_sample" />

@@ -4,6 +4,6 @@
     android:id="@+id/recipe_card_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/main_list_margin"
     tools:context=".ui.main.RecipesCardListFragment"
     tools:listitem="@layout/main_list_recipe_card_item" />
