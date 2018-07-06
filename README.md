@@ -8,11 +8,13 @@ You will create an app that will allow a user to select a recipe and see video-g
 As a working Android developer, you often have to create and implement apps where you are responsible for designing and planning the steps you need to take to create a production-ready app. Unlike Popular Movies where we gave you an implementation guide, it will be up to you to figure things out for the Baking App.
 
 ## Screenshots
-To be added
+![Tasty baking user interface](https://preview.ibb.co/d27rWd/tasty_baking.jpg "Tasty baking user interface")
 
-## What Did I Learn?
-- Use MediaPlayer/Exoplayer to display videos.
-- Handle error cases.
-- Add a widget.
-- Leverage a third-party library.
-- Use Fragments to create a responsive design that works on phones and tablets.
+## What Did I Learn / Use?
+- Android Architecture Components 
+> Including LiveData, ViewModel, Room, Retrofit, Gson
+- Fragments with master detail flow (tablet adaptation).
+- Widgets to show recipe ingredients.
+- Exoplayer to display videos.
+- Glide to download video thumbnails.
+- Espresso for UI testing.
