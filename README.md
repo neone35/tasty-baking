@@ -12,7 +12,7 @@ As a working Android developer, you often have to create and implement apps wher
 
 ## What Did I Learn / Use?
 - Android Architecture Components 
-> Including LiveData, ViewModel, Room, Retrofit, Gson
+- > Including LiveData, ViewModel, Room, Retrofit, Gson
 - Fragments with master detail flow (tablet adaptation).
 - Widgets to show recipe ingredients.
 - Exoplayer to display videos.
